@@ -1,10 +1,12 @@
 # from uuid import uuid4
 import logging
+import uuid
 from typing import Any, List
 
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from backend.core.config import DATABASE_URL
 from backend.models.db_tables import Base
@@ -103,6 +105,20 @@ class AsyncDatabaseAdapter:
             result = await session.execute(request)
             await session.commit()
             return result.fetchall()
+
+    async def get_polls_voted_by_user(self, user_id: uuid.UUID):
+        from backend.models.db_tables import Poll, Vote
+
+        async with self.SessionLocal() as session:
+            stmt = (
+                select(Poll)
+                .join(Vote, Vote.poll_id == Poll.id)
+                .where(Vote.user_id == user_id)
+                .options(selectinload(Poll.votes))
+                .distinct()
+            )
+            result = await session.execute(stmt)
+            return result.scalars().all()
 
 
 adapter = AsyncDatabaseAdapter()

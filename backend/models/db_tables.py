@@ -25,6 +25,7 @@ class User(Base):
     telegram_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
+    votes = relationship("Vote", back_populates="user", cascade="all, delete")
 
 
 class Poll(Base):
@@ -43,6 +44,8 @@ class Poll(Base):
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     private: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
+    votes = relationship("Vote", back_populates="poll", cascade="all, delete")
+
 
 class Vote(Base):
     __tablename__ = "votes"
@@ -56,8 +59,12 @@ class Vote(Base):
     poll_id: Mapped[uuid.UUID] = mapped_column(
         Uuid,
         ForeignKey("polls.id", ondelete="CASCADE"),
+        primary_key=True,
         index=True,
     )
     voted_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False, default=func.now()
     )
+
+    user = relationship("User", back_populates="votes")
+    poll = relationship("Poll", back_populates="votes")

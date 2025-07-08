@@ -25,7 +25,7 @@ async def register(user: UserCreate, code: str):
         return badresponse("Code is not valid", 401)
     db_tg = await adapter.get_by_value(User, "telegram_id", redis_telegram)
     if db_tg:
-        return badresponse("Telegram already used to create account", 409)
+        return badresponse("Telegram is already used to create account", 409)
     new_id = uuid7()
     new_user = {
         "id": new_id,
@@ -49,4 +49,5 @@ async def register(user: UserCreate, code: str):
         username=new_user_db.username,
         role=new_user_db.role,
         access_token=access_token,
+        telegram_id=redis_telegram,
     )
