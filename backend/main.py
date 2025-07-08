@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
-from core.config import FASTAPI_HOST, FASTAPI_PORT
-from core.routers_loader import include_all_routers
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from models.db_adapter import adapter
+
+from backend.core.config import FASTAPI_HOST, FASTAPI_PORT
+from backend.core.routers_loader import include_all_routers
+from backend.models.db_adapter import adapter
 
 
 @asynccontextmanager

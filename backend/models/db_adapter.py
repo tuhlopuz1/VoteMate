@@ -2,11 +2,12 @@
 import logging
 from typing import Any, List
 
-from core.config import DATABASE_URL
-from models.db_tables import Base
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
+
+from backend.core.config import DATABASE_URL
+from backend.models.db_tables import Base
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

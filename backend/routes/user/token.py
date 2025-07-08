@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from models.db_adapter import adapter
-from models.db_tables import User
-from models.hashing import verify_password
-from models.schemas import Tokens, UserRegister
-from models.token_manager import TokenManager
+
+from backend.models.db_adapter import adapter
+from backend.models.db_tables import User
+from backend.models.hashing import verify_password
+from backend.models.schemas import Tokens, UserRegister
+from backend.models.token_manager import TokenManager
 
 router = APIRouter()
 

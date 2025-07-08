@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from models.db_adapter import adapter
-from models.db_tables import User
-from models.hashing import get_password_hash
-from models.schemas import UserRegister
 from uuid_v7.base import uuid7
+
+from backend.models.db_adapter import adapter
+from backend.models.db_tables import User
+from backend.models.hashing import get_password_hash
+from backend.models.schemas import UserRegister
 
 router = APIRouter()
 
