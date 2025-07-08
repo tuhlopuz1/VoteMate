@@ -2,14 +2,18 @@ import os
 import json
 from web3 import Web3
 from dotenv import load_dotenv
-from web3.middleware import geth_poa_middleware
+from web3.middleware import ExtraDataToPOAMiddleware
+
+base_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = "./blockchain/.env"
+load_dotenv(env_path)
 
 # Загрузка окружения
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # Инициализация подключения
 w3 = Web3(Web3.HTTPProvider(os.getenv("BLOCKCHAIN_NODE_URL")))
-w3.middleware_onion.inject(geth_poa_middleware, layer=0)  # Важно для Polygon!
+w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
 
 # Загрузка ABI
 with open(os.path.join(os.path.dirname(__file__), 'abi.json')) as f:
@@ -33,7 +37,7 @@ def record_vote(vote_id: str, result_hash: str) -> str:
     })
     
     signed_tx = account.sign_transaction(tx)
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
     return tx_hash.hex()
 
 def get_vote_record(vote_id: str) -> str:
