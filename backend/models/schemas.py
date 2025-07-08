@@ -20,7 +20,6 @@ class UserCreate(BaseModel):
     )
     password: str
     role: Optional[Role] = Role.USER
-    description: str = ""
 
 
 class UserRegResponse(BaseModel):
@@ -28,7 +27,7 @@ class UserRegResponse(BaseModel):
     name: str
     username: str
     role: Role
-    description: str = ""
+
     access_token: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -44,11 +43,32 @@ class UserProfileResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+class UserResponse(BaseModel):
+    id: UUID
+    username: str
+    name: str
+    description: str = ""
+    role: Role
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
 class UserLogin(BaseModel):
     identifier: str
     password: str
 
 
 class Tokens(BaseModel):
-    access: str
-    refresh: str
+    access_token: str
+    refresh_token: str
+
+
+class UpdateProfile(BaseModel):
+    name: Optional[str] = None
+    username: Optional[str] = Field(
+        default=None,
+        min_length=3,
+        max_length=20,
+        pattern=r"^[a-zA-Z0-9_]+$",
+    )
+    description: Optional[str] = None
