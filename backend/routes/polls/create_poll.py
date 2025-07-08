@@ -15,6 +15,10 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
     if not user:
         return badresponse("Unauthorized", 401)
     options = {}
+    if len(poll.options) < 2:
+        return badresponse("Too few options")
+    elif len(poll.options) > 10:
+        return badresponse("Too many options")
     for vote in poll.options:
         options[vote] = 0
     new_poll_obj = {

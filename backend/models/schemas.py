@@ -82,3 +82,18 @@ class NewPoll(BaseModel):
     end_date: datetime
     options: list
     private: bool
+
+
+class PollSchema(BaseModel):
+    id: UUID
+    name: str
+    votes: int
+    user_id: UUID
+    user_username: str
+    description: str
+    options: dict
+    start_date: datetime
+    end_date: datetime
+    private: bool
+
+    model_config = {"from_attributes": True}
