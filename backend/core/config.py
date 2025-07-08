@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 logger.info("Environment loaded")
 
 DB_URL = os.getenv("DB_URL")
-UUID_SHA = os.getenv("UUID_SHA")
 RANDOM_SECRET = os.getenv("RANDOM_SECRET")
 FASTAPI_HOST = os.getenv("FASTAPI_HOST")
 FASTAPI_PORT = os.getenv("FASTAPI_PORT")
