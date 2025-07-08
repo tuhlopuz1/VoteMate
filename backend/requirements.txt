@@ -14,3 +14,4 @@ supabase
 pillow
 requests
 python-multipart
+uuid
