@@ -15,7 +15,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/confirm-register/{code}")
+@router.post("/confirm-register/{code}", response_model=UserRegResponse)
 async def register(user: UserCreate, code: str):
     username_check = await adapter.get_by_value(User, "username", user.username)
     if username_check:
@@ -42,6 +42,10 @@ async def register(user: UserCreate, code: str):
         {"sub": str(new_user_db.id), "type": "access"},
         TokenManager.ACCESS_TOKEN_EXPIRE_MINUTES,
     )
+    refresh_token = TokenManager.create_token(
+        {"sub": str(new_user_db.id), "type": "refresh"},
+        TokenManager.REFRESH_TOKEN_EXPIRE_MINUTES,
+    )
 
     return UserRegResponse(
         id=new_user_db.id,
@@ -49,5 +53,6 @@ async def register(user: UserCreate, code: str):
         username=new_user_db.username,
         role=new_user_db.role,
         access_token=access_token,
+        refresh_token=refresh_token,
         telegram_id=redis_telegram,
     )

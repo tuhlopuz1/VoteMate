@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -38,6 +38,7 @@ class UserRegResponse(BaseModel):
     username: str
     role: Role
     access_token: str
+    refresh_token: str
     telegram_id: int
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -102,10 +103,11 @@ class PollSchema(BaseModel):
     user_id: UUID
     user_username: str
     description: str
-    options: Optional[dict]
+    options: Union[dict, list]
     start_date: datetime
     end_date: datetime
     private: bool
     is_voted: bool = False
+    is_active: bool = False
 
     model_config = {"from_attributes": True}
