@@ -10,3 +10,6 @@ bcrypt==4.0.1
 aiosqlite
 asyncpg
 uuid_v7
+supabase
+pillow
+requests
