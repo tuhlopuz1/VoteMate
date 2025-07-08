@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from typing import Optional
 from uuid import UUID
@@ -72,3 +73,27 @@ class UpdateProfile(BaseModel):
         pattern=r"^[a-zA-Z0-9_]+$",
     )
     description: Optional[str] = None
+
+
+class NewPoll(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    start_date: datetime
+    end_date: datetime
+    options: list
+    private: bool
+
+
+class PollSchema(BaseModel):
+    id: UUID
+    name: str
+    votes: int
+    user_id: UUID
+    user_username: str
+    description: str
+    options: dict
+    start_date: datetime
+    end_date: datetime
+    private: bool
+
+    model_config = {"from_attributes": True}
