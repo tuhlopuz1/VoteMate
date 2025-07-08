@@ -30,8 +30,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     expose:
       - 8000
   nginx:
