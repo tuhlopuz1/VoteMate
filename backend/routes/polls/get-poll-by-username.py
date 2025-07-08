@@ -11,10 +11,10 @@ router = APIRouter()
 
 @router.get("/get-poll-by-user/{username}")
 async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check_user)]):
-    if not username.startswith("@"):
+    if not username.startswith("@") and user:
         username = "@" + username
     polls = await adapter.get_by_value(Poll, "user_username", username)
     if user.username == username:
         return polls
-    polls = [i for i in polls if i["private"] is False]
+    polls = [i for i in polls if i.private is False]
     return polls
