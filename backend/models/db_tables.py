@@ -1,7 +1,17 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, Enum, ForeignKey, Integer, String, Text, Uuid
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    Boolean,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    Uuid,
+)
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -22,7 +32,7 @@ class User(Base):
     role: Mapped[Role] = mapped_column(Enum(Role), default=Role.USER)
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     avatar_url: Mapped[str] = mapped_column(String, nullable=False, default=DEFAULT_AVATAR_URL)
-    telegram_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
     votes = relationship("Vote", back_populates="user", cascade="all, delete")
@@ -38,7 +48,7 @@ class Poll(Base):
         Uuid, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     user_username: Mapped[str] = mapped_column(String, nullable=False)
-    votes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    votes_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     options: Mapped[dict] = mapped_column(JSON, nullable=True)
     start_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)

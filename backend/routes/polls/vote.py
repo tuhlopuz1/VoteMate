@@ -23,8 +23,8 @@ async def vote(user: Annotated[User, Depends(check_user)], poll_id: UUID, option
     if option not in poll.options:
         return badresponse("Invalid option")
     options = poll.options
-    votes = poll.votes
+    votes = poll.votes_count
     options[option] = options[option] + 1
-    await adapter.update_by_id(Poll, poll_id, {"votes": votes + 1, "options": options})
+    await adapter.update_by_id(Poll, poll_id, {"votes_count": votes + 1, "options": options})
     await adapter.insert(Vote, {"user_id": user.id, "poll_id": poll_id})
     return okresp(201)

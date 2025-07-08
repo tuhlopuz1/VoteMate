@@ -6,6 +6,7 @@ from typing import Any, List
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from thefuzz import fuzz, process
 
 from backend.core.config import DATABASE_URL
@@ -142,6 +143,8 @@ class AsyncDatabaseAdapter:
             return result.fetchall()
 
     async def get_polls_voted_by_user(self, user_id: uuid.UUID):
+        from sqlalchemy import select
+
         from backend.models.db_tables import Poll, Vote
 
         async with self.SessionLocal() as session:
@@ -150,7 +153,7 @@ class AsyncDatabaseAdapter:
                 .join(Vote, Vote.poll_id == Poll.id)
                 .where(Vote.user_id == user_id)
                 .options(selectinload(Poll.votes))
-                .distinct()
+                .distinct(Poll.id)
             )
             result = await session.execute(stmt)
             return result.scalars().all()

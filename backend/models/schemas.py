@@ -98,7 +98,7 @@ class NewPoll(BaseModel):
 class PollSchema(BaseModel):
     id: UUID
     name: str
-    votes: int
+    votes_count: int
     user_id: UUID
     user_username: str
     description: str

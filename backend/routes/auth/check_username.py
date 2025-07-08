@@ -16,7 +16,7 @@ async def check_username(username: str):
     except ValidationError:
         return badresponse("Invalid username", 400)
     if valid:
-        existing_username = await adapter.get_by_value(User, "username", username)
+        existing_username = await adapter.get_by_value(User, "username", f"@{username}")
         if existing_username:
             return badresponse("Username already exists", 409)
         return okresp()
