@@ -40,6 +40,8 @@ class UserProfileResponse(BaseModel):
     name: str
     role: Role
     description: str = ""
+    voted_polls: Optional[int] = 0
+    created_polls: Optional[int] = 0
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

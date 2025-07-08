@@ -5,6 +5,7 @@ from typing import Any, List
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
+from thefuzz import fuzz, process
 
 from backend.core.config import DATABASE_URL
 from backend.models.db_tables import Base
@@ -97,6 +98,41 @@ class AsyncDatabaseAdapter:
                 await session.delete(record)
             await session.commit()
             return records
+
+    async def find_similar_value(
+        self,
+        model,
+        column_name: str,
+        search_value: str,
+        limit: int = 5,
+        similarity_threshold: int = 35,
+    ):
+        all_records = await self.get_all(model)
+        values = []
+        records_map = {}
+        for record in all_records:
+            value = getattr(record, column_name)
+            if value not in records_map:
+                records_map[value] = []
+            records_map[value].append(record)
+            values.append(value)
+        results = process.extractBests(
+            search_value,
+            list(set(values)),
+            limit=limit * 5,
+            score_cutoff=similarity_threshold,
+            scorer=fuzz.token_sort_ratio,
+        )
+        output = []
+        for value, score in results:
+            for record in records_map[value]:
+                record_dict = {}
+                for column in record.__table__.columns:
+                    record_dict[column.name] = getattr(record, column.name)
+                record_dict["similarity"] = score
+                output.append(record_dict)
+        output.sort(key=lambda x: x["similarity"], reverse=True)
+        return output[:limit]
 
     async def execute_with_request(self, request) -> List[Any]:
         async with self.SessionLocal() as session:
