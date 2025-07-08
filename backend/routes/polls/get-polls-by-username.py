@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from backend.core.dependencies import check_user
+from backend.core.dependencies import badresponse, check_user
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User, Vote
 from backend.models.schemas import PollSchema
@@ -13,6 +13,8 @@ router = APIRouter()
 
 @router.get("/get-polls-by-username/{username}")
 async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check_user)]):
+    if not user:
+        return badresponse("Unauthorized", 401)
     if not username.startswith("@"):
         username = "@" + username
 
@@ -26,7 +28,7 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
             poll.start_date and poll.start_date < now and poll.end_date and now < poll.end_date
         )
 
-        if user and user.username == username:
+        if user.username == username:
             result.append(poll_sch)
             continue
 
