@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 from uuid import UUID
 
@@ -17,6 +18,10 @@ async def vote(user: Annotated[User, Depends(check_user)], poll_id: UUID, option
     poll = await adapter.get_by_id(Poll, poll_id)
     if not poll:
         return badresponse("Poll not found", 404)
+    if poll.end_date < datetime.utcnow():
+        return badresponse("Poll closed")
+    if poll.start_date > datetime.utcnow():
+        return badresponse("Poll is not started")
     existing_vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll_id})
     if existing_vote != []:
         return badresponse("You have already voted", 409)

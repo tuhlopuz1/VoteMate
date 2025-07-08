@@ -19,7 +19,9 @@ async def get_poll_by_id(poll_id: uuid.UUID, user: Annotated[User, Depends(check
     poll = await adapter.get_by_id(Poll, id=poll_id)
     poll_sch = PollSchema.model_validate(poll)
     if poll.user_id != user and poll.end_date > datetime.utcnow():
-        poll_sch.options = None
+        poll_sch.options = list(poll_sch.options.keys())
+    if poll.start_date < datetime.utcnow() and poll.end_date > datetime.utcnow():
+        poll_sch.is_active = True
     vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll_id})
     if vote:
         poll_sch.is_voted = True

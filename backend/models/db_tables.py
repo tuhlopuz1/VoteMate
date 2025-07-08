@@ -10,6 +10,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     Uuid,
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP
@@ -60,16 +61,15 @@ class Poll(Base):
 class Vote(Base):
     __tablename__ = "votes"
 
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         Uuid,
         ForeignKey("users.id", ondelete="CASCADE"),
-        primary_key=True,
         index=True,
     )
     poll_id: Mapped[uuid.UUID] = mapped_column(
         Uuid,
         ForeignKey("polls.id", ondelete="CASCADE"),
-        primary_key=True,
         index=True,
     )
     voted_at: Mapped[datetime] = mapped_column(
@@ -78,3 +78,5 @@ class Vote(Base):
 
     user = relationship("User", back_populates="votes")
     poll = relationship("Poll", back_populates="votes")
+
+    __table_args__ = (UniqueConstraint("user_id", "poll_id", name="uq_vote_user_poll"),)

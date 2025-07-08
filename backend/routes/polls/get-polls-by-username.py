@@ -21,16 +21,16 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
     polls_user = []
     for poll in polls:
         poll_sch = PollSchema.model_validate(poll)
+        if poll.end_date > datetime.utcnow():
+            poll_sch.options = list(poll_sch.options.keys())
+        if poll.end_date > datetime.utcnow() and poll.start_date < datetime.utcnow():
+            poll_sch.is_active = True
         if user:
             vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id})
             if vote:
                 poll_sch.is_voted = True
-                if poll.end_date > datetime.utcnow():
-                    poll_sch.options = None
                 polls_user.append(poll_sch)
                 continue
-        if poll.end_date > datetime.utcnow():
-            poll_sch.options = None
         if not poll.private:
             polls_user.append(poll_sch)
     return polls_user
