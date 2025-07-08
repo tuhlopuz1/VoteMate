@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Shock Video FastAPI",
+        title="Blockchain FastAPI",
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,

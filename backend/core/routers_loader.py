@@ -17,7 +17,7 @@ def include_all_routers(app: FastAPI):
 
         if hasattr(module, "router"):
             parts = module_name.split(".")
-            tag = parts[1] if len(parts) >= 3 else "default"
+            tag = parts[2] if len(parts) >= 3 else "default"
 
             app.include_router(module.router, tags=[tag])
             logger.info(f"Included router from: {module_name} (tag: {tag})")
