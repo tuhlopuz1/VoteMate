@@ -107,7 +107,7 @@ class PollSchema(BaseModel):
     start_date: datetime
     end_date: datetime
     private: bool
-    is_voted: bool = False
+    is_voted: Optional[bool] = None
     is_active: bool = False
 
     model_config = {"from_attributes": True}
