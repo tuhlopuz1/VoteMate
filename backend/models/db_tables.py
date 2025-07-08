@@ -22,6 +22,7 @@ class User(Base):
     role: Mapped[Role] = mapped_column(Enum(Role), default=Role.USER)
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     avatar_url: Mapped[str] = mapped_column(String, nullable=False, default=DEFAULT_AVATAR_URL)
+    telegram_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
 
