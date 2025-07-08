@@ -1,11 +1,12 @@
+from contextlib import asynccontextmanager
+
+import uvicorn
+from core.config import FASTAPI_HOST, FASTAPI_PORT
+from core.routers_loader import include_all_routers
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from models.db_adapter import adapter
-from routes.user import router as user_router
-from contextlib import asynccontextmanager
-import uvicorn
 
-from config import FASTAPI_HOST, FASTAPI_PORT
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,9 +14,19 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title="Shock Video FastAPI",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        lifespan=lifespan,
+    )
 
-app.include_router(user_router, tags=["User"])
+    include_all_routers(app)
+    return app
+
+
+app = create_app()
 
 
 @app.get("/")

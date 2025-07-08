@@ -1,8 +1,9 @@
+import logging
 import os
-import logging 
+
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv("config/.env")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,6 +24,6 @@ POSTGRES_DBNAME = os.getenv("POSTGRES_DBNAME")
 if DB_URL:
     DATABASE_URL = DB_URL
 else:
-    DATABASE_URL = f"postgres+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DBNAME}"
+    DATABASE_URL = f"postgres+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DBNAME}"  # noqa
 
 logging.info(DATABASE_URL)

@@ -1,2 +1,3 @@
 **/__pycahce__/
-/backend/.env
+/config/.env
+.venv/

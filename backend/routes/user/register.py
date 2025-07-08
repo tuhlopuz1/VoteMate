@@ -1,13 +1,15 @@
+from uuid import UUID, uuid5
+
+from core.config import UUID_SHA
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from models.schemas import UserRegister
 from models.db_adapter import adapter
 from models.db_tables import User
 from models.hashing import get_password_hash
-from uuid import UUID, uuid5
-from config import UUID_SHA
+from models.schemas import UserRegister
 
 router = APIRouter()
+
 
 @router.post("/register")
 async def register(user: UserRegister):
@@ -18,7 +20,7 @@ async def register(user: UserRegister):
     new_user = {
         "id": id,
         "username": user.username,
-        "password_hash": get_password_hash(user.password)
+        "password_hash": get_password_hash(user.password),
     }
 
     await adapter.insert(User, new_user)
