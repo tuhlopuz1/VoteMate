@@ -19,5 +19,5 @@ def include_all_routers(app: FastAPI):
             parts = module_name.split(".")
             tag = parts[2] if len(parts) >= 3 else "default"
 
-            app.include_router(module.router, tags=[tag])
+            app.include_router(module.router, tags=[tag], prefix="/api/v2")
             logger.info(f"Included router from: {module_name} (tag: {tag})")
