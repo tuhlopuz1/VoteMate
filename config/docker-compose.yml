@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-container
+    env_file:
+      - /root/fastapi/.env
+    environment:
+      POSTGRES_DB: ${DBNAME}
+      POSTGRES_USER: ${PGR_USER}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGR_USER} -d ${DBNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  fastapi:
+    image: asdfrewqha/shock-fastapi-backend:latest
+    container_name: fastapi-container
+    env_file:
+      - /root/fastapi/.env
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    expose:
+      - 8000
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-container
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /root/fastapi/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /root/certs/api.vickz.ru:/etc/letsencrypt/live/api.vickz.ru:ro
+    depends_on:
+      - fastapi
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
