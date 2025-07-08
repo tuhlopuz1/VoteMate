@@ -30,7 +30,7 @@ def record_vote(vote_id: str, result_hash: str) -> str:
     account = w3.eth.account.from_key(os.getenv("OWNER_PRIVATE_KEY"))
     
     tx = contract.functions.recordVote(vote_id, result_hash).build_transaction({
-        'chainId': 80001,
+        'chainId': 1337,
         'gas': 200000,
         'gasPrice': w3.to_wei('30', 'gwei'),
         'nonce': w3.eth.get_transaction_count(account.address),

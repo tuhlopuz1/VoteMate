@@ -76,7 +76,7 @@ def main():
         logger.info("✅ Компилятор установлен и выбран")
 
         # 6. Компиляция контракта
-        contract_path = os.path.join(base_dir, 'contracts', 'VotingNotary.sol')
+        contract_path = os.path.join(base_dir, 'contracts', 'VotingTopic.sol')
         logger.info(f"Компилируем контракт: {contract_path}")
         
         try:
@@ -90,7 +90,7 @@ def main():
         try:
             compiled_sol = compile_standard({
                 "language": "Solidity",
-                "sources": {"VotingNotary.sol": {"content": source_code}},
+                "sources": {"VotingTopic.sol": {"content": source_code}},
                 "settings": {
                     "outputSelection": {
                         "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
@@ -103,8 +103,8 @@ def main():
             return
 
         # 7. Подготовка к деплою
-        bytecode = compiled_sol['contracts']['VotingNotary.sol']['VotingNotary']['evm']['bytecode']['object']
-        abi = compiled_sol['contracts']['VotingNotary.sol']['VotingNotary']['abi']
+        bytecode = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['evm']['bytecode']['object']
+        abi = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['abi']
         
         # Сохранение ABI
         abi_path = os.path.join(base_dir, 'abi.json')
@@ -153,28 +153,6 @@ def main():
         with open(env_path, 'a') as env_file:
             env_file.write(f'\nCONTRACT_ADDRESS="{tx_receipt.contractAddress}"')
         logger.info(f"Адрес контракта записан в {env_path}")
-
-        # 13. Вызов функции контракта (пример: recordVote)
-        contract_instance = w3.eth.contract(
-            address=tx_receipt.contractAddress,
-            abi=abi
-        )
-        # Пример вызова функции recordVote
-        vote_id = "test_vote"
-        result_hash = "123"
-        tx = contract_instance.functions.recordVote(vote_id, result_hash).build_transaction({
-            'chainId': 1337,
-            'gas': 200000,
-            'gasPrice': w3.to_wei('30', 'gwei'),
-            'nonce': w3.eth.get_transaction_count(account.address),
-        })
-        signed_tx = account.sign_transaction(tx)
-        tx_hash_func = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-        logger.info(f"Вызов recordVote отправлен! Хеш: {tx_hash_func.hex()}")
-
-        vote_id = "test_vote"
-        record = contract_instance.functions.getRecord(vote_id).call()
-        logger.info(f"Результат getRecord('{vote_id}'): {record}")
 
         logger.info("="*50) 
         logger.info("ДЕПЛОЙ УСПЕШНО ЗАВЕРШЕН!")
