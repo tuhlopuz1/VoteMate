@@ -11,6 +11,7 @@ router = APIRouter()
 
 @router.get("/profile", response_model=UserProfileResponse)
 async def profile(user: Annotated[User, Depends(check_user)]):
+
     response_user = UserProfileResponse(
         id=user.id,
         username=user.username,

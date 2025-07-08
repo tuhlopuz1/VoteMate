@@ -11,6 +11,15 @@ class Role(str, Enum):
     ADMIN = "ADMIN"
 
 
+class UsernameScheme(BaseModel):
+    username: str = Field(
+        ...,
+        min_length=3,
+        max_length=20,
+        pattern=r"^[a-zA-Z0-9_]+$",
+    )
+
+
 class UserCreate(BaseModel):
     name: str
     username: str = Field(
@@ -28,8 +37,8 @@ class UserRegResponse(BaseModel):
     name: str
     username: str
     role: Role
-
     access_token: str
+    telegram_id: int
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -91,9 +100,10 @@ class PollSchema(BaseModel):
     user_id: UUID
     user_username: str
     description: str
-    options: dict
+    options: Optional[dict]
     start_date: datetime
     end_date: datetime
     private: bool
+    is_voted: bool = False
 
     model_config = {"from_attributes": True}
