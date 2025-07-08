@@ -16,6 +16,18 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis-container
+    volumes:
+      - redis_data:/var/lib/redis/data
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --bind 0.0.0.0
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
   fastapi:
     image: asdfrewqha/blockchain:latest
     container_name: fastapi-container
@@ -25,6 +37,7 @@ services:
       - /root/fastapi/config/.env:/config/.env:ro
     depends_on:
       - postgres
+      - redis
     expose:
       - "8000"
     restart: unless-stopped
@@ -42,3 +55,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
