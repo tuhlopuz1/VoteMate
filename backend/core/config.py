@@ -26,6 +26,7 @@ REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
 REDIS_DB = os.getenv("REDIS_DB")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 if DB_URL:
     DATABASE_URL = DB_URL
