@@ -7,6 +7,7 @@ from backend.core.dependencies import badresponse
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import User
 from backend.models.hashing import get_password_hash
+from backend.models.redis_adapter import redis_adapter
 from backend.models.schemas import UserCreate, UserRegResponse
 from backend.models.token_manager import TokenManager
 
@@ -14,11 +15,17 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/register")
-async def register(user: UserCreate):
+@router.post("/confirm-register/{code}")
+async def register(user: UserCreate, code: str):
     username_check = await adapter.get_by_value(User, "username", user.username)
     if username_check:
         return badresponse("Username already exists", 409)
+    redis_telegram = await redis_adapter.get(f"telegram-code:{code}")
+    if not redis_telegram:
+        return badresponse("Code is not valid", 401)
+    db_tg = await adapter.get_by_value(User, "telegram_id", redis_telegram)
+    if db_tg:
+        return badresponse("Telegram is already used to create account", 409)
     new_id = uuid7()
     new_user = {
         "id": new_id,
@@ -26,6 +33,7 @@ async def register(user: UserCreate):
         "username": f"@{user.username}",
         "hashed_password": get_password_hash(user.password),
         "role": user.role,
+        "telegram_id": redis_telegram,
     }
 
     new_user_db = await adapter.insert(User, new_user)
@@ -41,4 +49,5 @@ async def register(user: UserCreate):
         username=new_user_db.username,
         role=new_user_db.role,
         access_token=access_token,
+        telegram_id=redis_telegram,
     )
