@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import JSON, Boolean, Enum, ForeignKey, Integer, String, Text, Uuid
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
+from sqlalchemy.sql import func
 
 from backend.core.config import DEFAULT_AVATAR_URL
 from backend.models.schemas import Role
@@ -40,3 +41,22 @@ class Poll(Base):
     start_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     private: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+
+class Vote(Base):
+    __tablename__ = "votes"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        primary_key=True,
+        index=True,
+    )
+    poll_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        ForeignKey("polls.id", ondelete="CASCADE"),
+        index=True,
+    )
+    voted_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True), nullable=False, default=func.now()
+    )
