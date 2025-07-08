@@ -1,41 +1,43 @@
+version: "3.8"
+
 services:
   postgres:
     image: postgres:15-alpine
     container_name: postgres-container
     env_file:
-      - /root/fastapi/config/.env
+      - /root/fastapi/.env
     environment:
-      - POSTGRES_DB
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
     ports:
       - "5432:5432"
+    restart: unless-stopped
 
   fastapi:
     image: asdfrewqha/blockchain:latest
     container_name: fastapi-container
     env_file:
       - /root/fastapi/config/.env
-    restart: unless-stopped
+    volumes:
+      - /root/fastapi/config/.env:/config/.env:ro
     depends_on:
       - postgres
     expose:
-      - 8000
+      - "8000"
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
     container_name: nginx-container
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /root/fastapi/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - /root/certs/api.vickz.ru:/etc/letsencrypt/live/api.vickz.ru:ro
     depends_on:
       - fastapi
+    ports:
+      - "80:80"
+    volumes:
+      - /root/fastapi/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
 
 volumes:
