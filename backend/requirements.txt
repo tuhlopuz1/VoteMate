@@ -13,3 +13,4 @@ uuid_v7
 supabase
 pillow
 requests
+python-multypart
