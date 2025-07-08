@@ -28,8 +28,7 @@ async def register(user: UserCreate):
         "role": user.role,
     }
 
-    await adapter.insert(User, new_user)
-    new_user_db = await adapter.get_by_id(User, new_id)
+    new_user_db = await adapter.insert(User, new_user)
 
     access_token = TokenManager.create_token(
         {"sub": str(new_user_db.id), "type": "access"},
