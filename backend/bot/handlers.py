@@ -1,3 +1,4 @@
+import os
 import secrets
 import string
 
@@ -5,6 +6,7 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import FSInputFile
 
 from backend.bot.keyboards import main_keyboard
 from backend.models.db_adapter import adapter
@@ -92,9 +94,10 @@ async def handle_poll_name(message: types.Message, state: FSMContext):
             "options": poll["options"],
         }
         visualizer = PollVisualizer(poll_dict)
-        chart_path = visualizer.generate_visual_report()
-        with open(chart_path, "rb") as photo:
-            await message.answer_photo(photo, caption=f'Статистика для голосования "{poll_name}"')
+        graph = visualizer.generate_visual_report()
+        file = FSInputFile(graph)
+        await message.answer_photo(photo=file, caption=f"Статистика вашего опроса {poll_name}:")
+        os.remove(graph)
     else:
         await message.answer("Голосование с таким названием не найдено.")
     await state.clear()
