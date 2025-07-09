@@ -2,7 +2,6 @@ import requests
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-from backend.core.config import SUPABASE_API
 from backend.core.dependencies import badresponse
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import User
@@ -16,11 +15,7 @@ async def profile_picture(uuid: str):
     if not user:
         return badresponse("Not found", 404)
 
-    headers = {
-        "Authorization": f"Bearer {SUPABASE_API}",
-    }
-
-    r = requests.get(user.avatar_url, headers=headers, stream=True)
+    r = requests.get(user.avatar_url, stream=True)
 
     if r.status_code != 200:
         return badresponse("Image not accessible", r.status_code)
