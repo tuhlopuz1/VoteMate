@@ -41,9 +41,7 @@ def record_vote(vote_id: str, result_hash: str) -> str:
     tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
     return tx_hash.hex()
 
-def get_vote_record(vote_id: str) -> str:
-    """Читает результаты голосования из блокчейна"""
-    return contract.functions.getRecord(vote_id).call()
+
 
 def create_vote_topic(title: str, options: list) -> int:
     """Создаёт новый топик голосования и возвращает его ID"""
@@ -100,7 +98,4 @@ def get_vote_count(topic_id: int, option: str) -> int:
     """Получает количество голосов за вариант в топике"""
     return contract.functions.getVotes(topic_id, option).call()
 
-print(create_vote_topic("Тестовый топик 2", ["Вариант 1", "Вариант 2"]))
-print(get_topic_details(1))  # Получаем детали топика с ID 0
-print(vote_for_topic(1, "Вариант 2", "test_uuid".encode('utf-8')))
-print(get_vote_count(1, "Вариант 2"))  # Получаем количество голосов за "Вариант 1"
+print(get_vote_count("0", "Вариант 2"))  # Получаем количество голосов за "Вариант 1"
