@@ -22,6 +22,8 @@ async def shutdown(ctx):
 async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
     await asyncio.sleep(delay)
     poll = await adapter.get_by_id(Poll, poll_id)
+    if poll.is_notified:
+        return None
     if poll.votes_count == 0:
         await bot.send_message(
             chat_id=chat_id,
@@ -44,6 +46,7 @@ async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
         chat_id=chat_id, photo=file, caption=f"Ваш опрос {poll.name} завершён! Вот его статистика:"
     )
     os.remove(graph)
+    await adapter.update_by_id(Poll, poll_id, {"is_notified": True})
     return None
 
 

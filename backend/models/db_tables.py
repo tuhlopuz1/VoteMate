@@ -33,6 +33,7 @@ class User(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     avatar_url: Mapped[str] = mapped_column(String, nullable=False, default=DEFAULT_AVATAR_URL)
     telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
+    notifications: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
     votes = relationship("Vote", back_populates="user", cascade="all, delete")
@@ -53,6 +54,7 @@ class Poll(Base):
     start_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     private: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_notified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     votes = relationship("Vote", back_populates="poll", cascade="all, delete")
 
