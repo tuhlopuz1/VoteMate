@@ -7,7 +7,7 @@ from arq.connections import RedisSettings
 from backend.bot.dispatcher import bot
 from backend.core.config import REDIS_ARQ, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
 from backend.models.db_adapter import adapter
-from backend.models.db_tables import Poll
+from backend.models.db_tables import Poll, User
 from backend.models.poll_analyzer import PollVisualizer
 
 
@@ -22,6 +22,9 @@ async def shutdown(ctx):
 async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
     await asyncio.sleep(delay)
     poll = await adapter.get_by_id(Poll, poll_id)
+    user = await adapter.get_by_value(User, "telegram_id", chat_id)
+    if not user.notifications:
+        return None
     if poll.is_notified:
         return None
     if poll.votes_count == 0:

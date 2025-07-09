@@ -36,7 +36,6 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
         "private": poll.private,
     }
     new_poll_db = await adapter.insert(Poll, new_poll_obj)
-    if user.notifications:
-        delay = (new_poll_db.end_date - datetime.now(timezone.utc)).total_seconds()
-        await enqueue_notify_author(user.telegram_id, new_poll_db.id, delay)
+    delay = (new_poll_db.end_date - datetime.now(timezone.utc)).total_seconds()
+    await enqueue_notify_author(user.telegram_id, new_poll_db.id, delay)
     return okresp(201, str(new_poll_db.id))

@@ -56,7 +56,8 @@ async def watch_polls_callback(callback: types.CallbackQuery):
     elif not user.notifications:
         await callback.message.answer(
             "Вы только что подписались на уведомления о завершении ваших голосований. ",
-            "Теперь, если вы создатите голосование - по его окончанию мы сразу пришлём вам статистику. ",
+            "Теперь, если по окончании любого созданного вами голосования  ",
+            "Мы сразу пришлём вам его статистику",
         )
         await adapter.update_by_id(User, user.id, {"notifications": True})
     else:
