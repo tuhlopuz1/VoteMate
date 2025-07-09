@@ -1,5 +1,4 @@
-import os
-from datetime import datetime
+import tempfile
 from textwrap import wrap
 
 import matplotlib.pyplot as plt
@@ -9,16 +8,13 @@ from matplotlib.ticker import PercentFormatter
 
 
 class PollVisualizer:
-    def __init__(self, poll_data: dict, output_dir: str = "reports"):
+    def __init__(self, poll_data: dict):
         self.poll_data = poll_data
-        self.output_dir = output_dir
-        os.makedirs(output_dir, exist_ok=True)
         sns.set_theme(style="whitegrid")
 
     def generate_visual_report(self) -> str:
-        file_prefix = f"poll_{self.poll_data['id'][:8]}"
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        chart_path = os.path.join(self.output_dir, f"{file_prefix}_{timestamp}.png")
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+            chart_path = tmpfile.name
         self._generate_chart(chart_path)
         return chart_path
 
