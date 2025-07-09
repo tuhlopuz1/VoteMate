@@ -53,7 +53,8 @@ async def watch_polls_callback(callback: types.CallbackQuery):
     user = await adapter.get_by_value(User, "telegram_id", callback.message.chat.id)
     if not user:
         await callback.message.answer("Судя по всему, вы не зарегистрированы на нашей платформе.")
-    elif not user.notifications:
+    elif not user[0].notifications:
+        user = user[0]
         await callback.message.answer(
             "Вы только что подписались на уведомления о завершении ваших голосований. ",
             "Теперь, если по окончании любого созданного вами голосования  ",
@@ -80,7 +81,7 @@ async def handle_poll_name(message: types.Message, state: FSMContext):
         poll = poll[0]
         poll_dict = {
             "id": str(poll.id),
-            "name": poll.title,
+            "name": poll.name,
             "votes_count": poll.votes_count,
             "user_id": poll.user_id,
             "user_username": poll.user_username,
