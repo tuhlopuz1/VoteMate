@@ -14,8 +14,14 @@ async def find_user(username: str, user: Annotated[User, Depends(check_user)]):
     if not user:
         return badresponse("Unauthorized", 401)
     res = []
-    res_users = await adapter.find_similar_value(User, "username", f"@{username}")
-    res_names = await adapter.find_similar_value(User, "name", username)
+    res_users = await adapter.find_similar_value(
+        User, "username", f"@{username}", similarity_threshold=15
+    )
+    res_names = await adapter.find_similar_value(User, "name", username, similarity_threshold=15)
     res = res_users + res_names
+    for i in res:
+        for j in res:
+            if i["id"] == j["id"]:
+                res.remove(j)  # если что коментить тут
     res.sort(key=lambda x: x["similarity"], reverse=True)
     return res
