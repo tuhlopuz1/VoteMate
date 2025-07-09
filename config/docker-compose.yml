@@ -40,27 +40,7 @@ services:
     expose:
       - "8000"
     restart: unless-stopped
-  rclone:
-    image: rclone/rclone:latest
-    container_name: rclone
-    expose:
-      - "5527"
-    env_file:
-      - .env
-    environment:
-      - RCLONE_ACCESS_KEY=${RCLONE_ACCESS_KEY}
-      - RCLONE_SECRET_KEY=${RCLONE_SECRET_KEY}
-    volumes:
-      - ./rclone:/config/rclone
-      - ./data:/data
-    command: >
-      rcd
-      --rc-addr=:5572
-      --rc-user=${RCLONE_USER}
-      --rc-pass=${RCLONE_PASS}
-      --rc-web-gui
-      --config=/config/rclone/rclone.conf
-    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     container_name: nginx-container
