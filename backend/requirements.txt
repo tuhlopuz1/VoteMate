@@ -16,3 +16,5 @@ python-multipart
 redis
 thefuzz
 aiogram
+matplotlib
+numpy
