@@ -33,7 +33,7 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
         if poll_sch.options and now < poll.end_date:
             poll_sch.options = list(poll_sch.options.keys())
 
-        if user:
+        if user and not user.id == poll.user_id:
             vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id})
             if vote:
                 poll_sch.is_voted = True

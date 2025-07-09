@@ -18,6 +18,8 @@ async def vote(user: Annotated[User, Depends(check_user)], poll_id: UUID, option
     poll = await adapter.get_by_id(Poll, poll_id)
     if not poll:
         return badresponse("Poll not found", 404)
+    if poll.user_id == user.id:
+        return badresponse("You can't vote in your polls", 403)
     if poll.end_date < datetime.utcnow():
         return badresponse("Poll closed")
     if poll.start_date > datetime.utcnow():
