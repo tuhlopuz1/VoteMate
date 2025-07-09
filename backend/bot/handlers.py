@@ -4,6 +4,7 @@ import string
 from aiogram import Router, types
 from aiogram.filters import Command
 
+from backend.bot.keyboards import main_keyboard
 from backend.models.redis_adapter import redis_adapter
 
 router = Router()
@@ -24,3 +25,21 @@ async def handle_start(message: types.Message):
         await redis_adapter.set(f"telegram-id:{message.chat.id}", code, expire=600)
         await redis_adapter.set(f"telegram-code:{code}", message.chat.id, expire=600)
         await message.answer(f"Ваш код: {code}")
+    await message.answer(
+        "Если хотите, то можете нажать на одну из выбранных кнопок, "
+        "чтобы следить за результатами созданных вами голосований или "
+        "получить статистику по какому-либо голосованию.",
+        reply_markup=main_keyboard,
+    )
+
+
+@router.callback_query(lambda c: c.data == "watchh_polls")
+async def watch_polls(callback: types.CallbackQuery):
+    await callback.answer(
+        "Пока ничего не закончилось еще, мы уведомим вас, когда закончится какое-либо голосование!"
+    )
+
+
+@router.callback_query(lambda c: c.data == "statistics")
+async def statistics(callback: types.CallbackQuery):
+    await callback.answer("статистика.")
