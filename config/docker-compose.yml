@@ -15,6 +15,11 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DBNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   redis:
     image: redis:7-alpine
     container_name: redis-container
@@ -27,6 +32,11 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   fastapi:
     image: asdfrewqha/blockchain:latest
     container_name: fastapi-container
@@ -35,12 +45,22 @@ services:
     volumes:
       - /root/fastapi/config/.env:/config/.env:ro
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     expose:
       - "8000"
     restart: unless-stopped
-
+  celery:
+    image: asdfrewqha/blockchain:latest
+    container_name: celery-container
+    env_file:
+      - /root/fastapi/.env
+    command: celery -A backend.core.celery_worker.celery_app worker --loglevel=info -P prefork
+    depends_on:
+      redis:
+        condition: service_healthy
   nginx:
     image: nginx:alpine
     container_name: nginx-container

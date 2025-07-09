@@ -17,6 +17,8 @@ async def get_poll_by_id(poll_id: uuid.UUID, user: Annotated[User, Depends(check
     if not user:
         return badresponse("Unauthorized", 401)
     poll = await adapter.get_by_id(Poll, id=poll_id)
+    if not poll:
+        return badresponse("Poll not found", 404)
     poll_sch = PollSchema.model_validate(poll)
     now = datetime.now(timezone.utc)
     if poll.user_id != user.id and poll.end_date > now:
