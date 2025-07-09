@@ -22,6 +22,6 @@ async def end_vote(poll_id: UUID, user: Annotated[User, Depends(check_user)]):
     if poll.user_id != user.id:
         return badresponse("You are not the owner of this poll", 403)
     poll.end_date = datetime.now(timezone.utc)
-    await adapter.update_by_id(Poll, poll_id, {"end_date", poll.end_date})
+    await adapter.update_by_id(Poll, poll_id, {"end_date": poll.end_date})
     await enqueue_notify_author(user.telegram_id, poll_id, 0.0)
     return okresp(200, "Poll ended")
