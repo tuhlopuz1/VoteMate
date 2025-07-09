@@ -108,7 +108,7 @@ class AsyncDatabaseAdapter:
         search_value: str,
         limit: int = 5,
         similarity_threshold: int = 35,
-    ):
+    ) -> list:
         all_records = await self.get_all(model)
         values = []
         records_map = {}
