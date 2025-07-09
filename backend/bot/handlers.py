@@ -83,13 +83,13 @@ async def handle_poll_name(message: types.Message, state: FSMContext):
     if poll:
         poll = poll[0]
         poll_dict = {
-            "id": str(poll.id),
-            "name": poll.name,
-            "votes_count": poll.votes_count,
-            "user_id": poll.user_id,
-            "user_username": poll.user_username,
-            "description": poll.description,
-            "options": poll.options,
+            "id": str(poll["id"]),
+            "name": poll["name"],
+            "votes_count": poll["votes_count"],
+            "user_id": poll["user_id"],
+            "user_username": poll["user_username"],
+            "description": poll["description"],
+            "options": poll["options"],
         }
         visualizer = PollVisualizer(poll_dict)
         chart_path = visualizer.generate_visual_report()
