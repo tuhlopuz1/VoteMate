@@ -3,9 +3,10 @@ import logging
 from fastapi import Security
 from fastapi.responses import JSONResponse, Response
 from fastapi.security import HTTPBearer
-from models.db_adapter import adapter
-from models.db_tables import User
-from models.token_manager import TokenManager
+
+from backend.models.db_adapter import adapter
+from backend.models.db_tables import User
+from backend.models.token_manager import TokenManager
 
 Bear = HTTPBearer(auto_error=False)
 

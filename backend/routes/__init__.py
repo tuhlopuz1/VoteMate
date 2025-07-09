@@ -1,1 +1,1 @@
-from routes import user  # noqa
+from backend.routes import auth  # noqa
