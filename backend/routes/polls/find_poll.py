@@ -23,7 +23,7 @@ async def find_poll(poll_name: str, user: Annotated[User, Depends(check_user)]):
         poll_sch = PollSchema.model_validate(poll)
         poll_sch.is_active = bool(poll_sch.start_date < now and now < poll_sch.end_date)
 
-        if user.id == poll.user_id:
+        if user.id == poll_sch.user_id:
             result.append(poll_sch)
             continue
 
