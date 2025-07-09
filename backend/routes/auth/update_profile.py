@@ -62,7 +62,7 @@ async def upd_profile(user: Annotated[User, Depends(check_user)], update: Update
             await adapter.update_by_value(
                 Poll,
                 {"user_username": user.username},
-                {"user_username", update.username},
+                {"user_username": update.username},
             )
         else:
             return badresponse("This username is already taken", 409)
