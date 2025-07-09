@@ -27,7 +27,7 @@ async def find_poll(poll_name: str, user: Annotated[User, Depends(check_user)]):
             result.append(poll_sch)
             continue
 
-        if poll_sch.options and now < poll.end_date:
+        if poll_sch.options and now < poll_sch.end_date:
             poll_sch.options = list(poll_sch.options.keys())
 
         if user:
