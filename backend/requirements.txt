@@ -18,3 +18,4 @@ aiogram
 httpx
 aws-requests-auth
 httpx-aws-auth
+celery[redis]
