@@ -111,3 +111,8 @@ class PollSchema(BaseModel):
     is_active: bool = False
 
     model_config = {"from_attributes": True}
+
+
+class PasswordUpdate(BaseModel):
+    old_password: str
+    new_password: str
