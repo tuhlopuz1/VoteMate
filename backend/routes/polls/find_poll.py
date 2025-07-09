@@ -16,7 +16,7 @@ async def find_poll(poll_name: str, user: Annotated[User, Depends(check_user)]):
     if not user:
         return badresponse("Unauthorized", 401)
     polls = await adapter.find_similar_value(Poll, "name", poll_name)
-    now = datetime.now(timezone.utc())
+    now = datetime.now(timezone.utc)
     result: list[PollSchema] = []
 
     for poll in polls:
