@@ -78,12 +78,12 @@ class Tokens(BaseModel):
 
 class UpdateProfile(BaseModel):
     name: Optional[str] = None
-    username: Optional[str] = Field(
-        default=None,
-        min_length=3,
-        max_length=20,
-        pattern=r"^[a-zA-Z0-9_]+$",
-    )
+    username: Optional[str] = None  # Field(
+    #     default=None,
+    #     min_length=3,
+    #     max_length=20,
+    #     pattern=r"^[a-zA-Z0-9_]+$",
+    # )
     description: Optional[str] = None
 
 

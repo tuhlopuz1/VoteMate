@@ -15,6 +15,20 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+def is_valid(username):
+    if (
+        len(username) < 4
+        or len(username) > 20
+        or len(
+            [i for i in ["#", "!", "&", "?", "/", "|", "\\", "`", "~", ":", ";"] if i in username]
+        )
+        != 0
+        or username.count("@") != 1
+    ):
+        return False
+    return True
+
+
 @router.put("/update-profile")
 async def upd_profile(user: Annotated[User, Depends(check_user)], update: UpdateProfile):
     if not user:
@@ -27,7 +41,11 @@ async def upd_profile(user: Annotated[User, Depends(check_user)], update: Update
         updated_data["name"] = update.name
 
     if update.username:
-        update.username = f"@{update.username}"
+        if not update.username.startswith("@"):
+            update.username = f"@{update.username}"
+        updated_data["username"] = update.username
+        if not is_valid(updated_data["username"]):
+            return badresponse("Invalid username", 400)
         existing_username = await adapter.get_by_value(User, "username", update.username)
         if not existing_username:
             updated_data["username"] = update.username
