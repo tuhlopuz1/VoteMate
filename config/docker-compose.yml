@@ -40,7 +40,6 @@ services:
     expose:
       - "8000"
     restart: unless-stopped
-  services:
   rclone:
     image: rclone/rclone:latest
     container_name: rclone
