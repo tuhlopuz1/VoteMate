@@ -62,6 +62,7 @@ async def watch_polls_callback(callback: types.CallbackQuery):
         )
         await adapter.update_by_id(User, user.id, {"notifications": True})
     else:
+        user = user[0]
         await callback.message.answer("Вы отписались от рассылки. Будем скучать!")
         await adapter.update_by_id(User, user.id, {"notifications": False})
 
