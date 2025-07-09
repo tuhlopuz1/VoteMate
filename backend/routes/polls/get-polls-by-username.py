@@ -19,7 +19,7 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
         username = "@" + username
 
     polls = await adapter.get_by_value(Poll, "user_username", username)
-    now = datetime.now(timezone.utc())
+    now = datetime.now(timezone.utc)
     result: list[PollSchema] = []
 
     for poll in polls:
