@@ -43,8 +43,8 @@ services:
   rclone:
     image: rclone/rclone:latest
     container_name: rclone
-    ports:
-      - "127.0.0.1:5572:5572"
+    expose:
+      - "5527"
     env_file:
       - .env
     environment:
