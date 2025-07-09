@@ -7,7 +7,7 @@ from backend.core.dependencies import badresponse, check_user, okresp
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User
 from backend.models.schemas import NewPoll
-from backend.routes.polls.tasks import notify_author_task
+from backend.routes.polls.tasks import enqueue_notify_author
 
 router = APIRouter()
 
@@ -37,5 +37,5 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
     }
     new_poll_db = await adapter.insert(Poll, new_poll_obj)
     delay = (new_poll_db.end_date - datetime.now(timezone.utc)).total_seconds()
-    notify_author_task.apply_async(args=[user.telegram_id, new_poll_db.id], countdown=delay)
-    return okresp(200, message=str(new_poll_db.id))
+    await enqueue_notify_author(user.telegram_id, new_poll_db.id, delay)
+    return okresp(201, str(new_poll_db.id))
