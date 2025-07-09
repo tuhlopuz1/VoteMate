@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -21,9 +21,10 @@ async def get_my_votes(user: Annotated[User, Depends(check_user)]):
     for poll in user_polls:
         poll_sch = PollSchema.model_validate(poll)
         poll_sch.is_voted = True
-        if poll.end_date > datetime.utcnow() and poll.start_date < datetime.utcnow():
+        now = datetime.now(timezone.utc)
+        if poll.end_date > now and poll.start_date < now:
             poll_sch.is_active = True
-        if poll.end_date > datetime.utcnow():
+        if poll.end_date > now:
             poll_sch.options = list(poll_sch.options.keys())
         polls_sch.append(poll_sch)
     return polls_sch
