@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -6,6 +7,7 @@ from backend.core.dependencies import badresponse, check_user, okresp
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User
 from backend.models.schemas import NewPoll
+from backend.routes.polls.tasks import notify_author_task
 
 router = APIRouter()
 
@@ -19,6 +21,8 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
         return badresponse("Too few options")
     elif len(poll.options) > 10:
         return badresponse("Too many options")
+    elif len(poll.options) != len(set(poll.options)):
+        return badresponse("Duplicating options")
     for vote in poll.options:
         options[vote] = 0
     new_poll_obj = {
@@ -32,4 +36,6 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
         "private": poll.private,
     }
     new_poll_db = await adapter.insert(Poll, new_poll_obj)
+    delay = (new_poll_db.end_date - datetime.now(timezone.utc)).total_seconds()
+    notify_author_task.apply_async(args=[user.telegram_id, new_poll_db.id], countdown=delay)
     return okresp(200, message=str(new_poll_db.id))
