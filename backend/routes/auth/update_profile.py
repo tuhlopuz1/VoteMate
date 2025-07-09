@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from backend.core.config import DEFAULT_AVATAR_URL
 from backend.core.dependencies import badresponse, check_user, okresp
 from backend.models.db_adapter import adapter
-from backend.models.db_tables import User
+from backend.models.db_tables import Poll, User
 from backend.models.s3_adapter import s3
 from backend.models.schemas import UpdateProfile
 
@@ -59,6 +59,11 @@ async def upd_profile(user: Annotated[User, Depends(check_user)], update: Update
                     await adapter.update_by_id(User, uid, {"avatar_url": public_url})
                 except Exception as e:
                     logger.error(f"Ошибка при перемещении аватара: {e}")
+            await adapter.update_by_value(
+                Poll,
+                {"user_username": user.username},
+                {"user_username", update.username},
+            )
         else:
             return badresponse("This username is already taken", 409)
 

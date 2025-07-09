@@ -7,6 +7,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
+from sqlalchemy.sql import and_
 from thefuzz import fuzz, process
 
 from backend.core.config import DATABASE_URL
@@ -65,19 +66,16 @@ class AsyncDatabaseAdapter:
             await session.refresh(record)
             return record
 
-    async def update(self, model, update_dict: dict, id: int) -> Any:
-        async with self.SessionLocal() as session:
-            result = await session.execute(select(model).where(model.id == id))
-            record = result.scalar_one_or_none()
-            if record:
-                for key, value in update_dict.items():
-                    setattr(record, key, value)
-                await session.commit()
-            return record
-
     async def update_by_id(self, model, record_id: int, updates: dict):
         async with self.SessionLocal() as session:
             stmt = update(model).where(model.id == record_id).values(**updates)
+            await session.execute(stmt)
+            await session.commit()
+
+    async def update_by_value(self, model, filters: dict, updates: dict):
+        async with self.SessionLocal() as session:
+            conditions = [getattr(model, key) == value for key, value in filters.items()]
+            stmt = update(model).where(and_(*conditions)).values(**updates)
             await session.execute(stmt)
             await session.commit()
 
