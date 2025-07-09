@@ -23,7 +23,7 @@ async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
     await asyncio.sleep(delay)
     poll = await adapter.get_by_id(Poll, poll_id)
     user = await adapter.get_by_value(User, "telegram_id", chat_id)
-    if not user.notifications:
+    if not user[0].notifications:
         return None
     if poll.is_notified:
         return None
