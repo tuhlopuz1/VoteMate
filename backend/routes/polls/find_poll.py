@@ -31,13 +31,13 @@ async def find_poll(poll_name: str, user: Annotated[User, Depends(check_user)]):
             poll_sch.options = list(poll_sch.options.keys())
 
         if user:
-            vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id})
+            vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll_sch.id})
             if vote:
                 poll_sch.is_voted = True
                 result.append(poll_sch)
                 continue
 
-        if not poll.private:
+        if not poll_sch.private:
             result.append(poll_sch)
 
     return result
