@@ -15,9 +15,9 @@ async def find_user(username: str, user: Annotated[User, Depends(check_user)]):
         return badresponse("Unauthorized", 401)
     res = []
     res_users = await adapter.find_similar_value(
-        User, "username", f"@{username}", similarity_threshold=15
+        User, "username", f"@{username}", similarity_threshold=25
     )
-    res_names = await adapter.find_similar_value(User, "name", username, similarity_threshold=15)
+    res_names = await adapter.find_similar_value(User, "name", username)
     res = res_users + res_names
     for i in res:
         for j in res:
