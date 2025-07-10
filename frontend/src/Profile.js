@@ -126,17 +126,21 @@ const ProfilePage = () => {
     <div className='main-layout'>
       <Sidebar />
       <div className="profile-content">
-        <div className="profile-header">
-          <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
-          <div className="profile-info">
-            <h2>{name}</h2>
-            <p>{description}</p>
-            <div className="profile-stats">
-              <div>Created: {polls.length}</div>
-              <div>Participated: {votedPolls.length}</div>
-            </div>
+      <div className="profile-header">
+        <div className="profile-header-left">
+          {localStorage.getItem('role')==='USER' ? <button className="get-pro-button" onClick={() => {window.location.href = '/#/get-pro'}}>Get Pro</button> : <p className='get-pro-button text'>Pro user</p>}
+        </div>
+        <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
+        <div className="profile-info">
+          <h2>{name}</h2>
+          <p>{description}</p>
+          <div className="profile-stats">
+            <div>Created: {polls.length}</div>
+            <div>Participated: {votedPolls.length}</div>
           </div>
         </div>
+      </div>
+
 
         <div className="profile-tabs">
           <button

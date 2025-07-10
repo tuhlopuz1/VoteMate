@@ -15,6 +15,8 @@ import PollViewPublic from './PollViewPublic.js';
 import SwaggerUIPage from './Swagger.js';
 import SettingsPage from './Settings.js';
 import TrendingPage from './Trending.js';
+import ProSubscribePage from './GetPro.js';
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/trending" element={<TrendingPage />} />
         <Route path="/profile-setup" element={<ProfileSetupPage />} />
+        <Route path="/get-pro" element={<ProSubscribePage />} />
         <Route path="/poll-view-creator/:poll_id" element={<PollViewCreator />} />
         <Route path="/poll/:poll_id" element={<PollViewPublic />} />
         <Route path="/swagger" element={<SwaggerUIPage />} />
