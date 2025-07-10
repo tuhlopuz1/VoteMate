@@ -16,7 +16,7 @@ const Navbar = ({ currentPath }) => {
 
           <div className="navbar-actions">
             <Link to="/login" className="button login-btn">
-   
+
                 Log in
 
             </Link>
