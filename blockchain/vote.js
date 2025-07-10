@@ -22,8 +22,7 @@ async function Vote(topicId, option) {
         }
 
         async function loadWalletFromLocalStorage() {
-            //const privateKey = localStorage.getItem('privateKey');
-            const privateKey = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b1138b37e0e6f314eb0c53f3e8a3";
+            const privateKey = localStorage.getItem('privateKey');
             if (!privateKey) {
                 throw new Error("Wallet not found in localStorage");
             }
