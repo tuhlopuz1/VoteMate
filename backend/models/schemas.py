@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Union
+from typing import List, Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -120,8 +120,9 @@ class PasswordUpdate(BaseModel):
     new_password: str
 
 
-class FilterPollSchema(BaseModel):
-    tags: Optional[list] = None
+class SearchPollSchema(BaseModel):
+    poll_name: Optional[str] = None
+    tags: Optional[List[str]] = None
     poll_status: Optional[str] = None
     voting_status: Optional[str] = None
     sort_by: Optional[str] = None
