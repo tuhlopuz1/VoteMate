@@ -5,8 +5,10 @@ from dotenv import load_dotenv
 from sqlalchemy import pool
 
 from alembic import context
+from backend.models import db_tables  # noqa
 from backend.models.db_tables import Base
 
+print("Tables in metadata:", Base.metadata.tables.keys())
 load_dotenv("config/.env")
 
 config = context.config
