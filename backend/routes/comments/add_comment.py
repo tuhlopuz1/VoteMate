@@ -43,6 +43,6 @@ async def add_comment(
         "parent_username": parent_username,
         "content": content,
     }
-    await adapter.update_by_id(Poll, poll_id, {"comments": poll.comments + 1})
+    await adapter.update_by_id(Poll, poll_id, {"comments_count": poll.comments_count + 1})
     new_comm = await adapter.insert(Comment, new_comment)
     return okresp(201, str(new_comm.id))

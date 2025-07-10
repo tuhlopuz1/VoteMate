@@ -21,5 +21,7 @@ async def delete_comment(user: Annotated[User, Depends(check_user)], comment_id:
         return badresponse("Forbidden", 403)
     poll = await adapter.get_by_id(Poll, comment.poll_id)
     await adapter.delete(Comment, comment_id)
-    await adapter.update_by_id(Poll, comment.poll_id, {"comments": max(poll.comments - 1, 0)})
+    await adapter.update_by_id(
+        Poll, comment.poll_id, {"comments_count": max(poll.comments_count - 1, 0)}
+    )
     return okresp(204)

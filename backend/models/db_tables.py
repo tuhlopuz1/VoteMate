@@ -53,7 +53,7 @@ class Poll(Base):
     )
     user_username: Mapped[str] = mapped_column(String, nullable=False)
     votes_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    comments: Mapped[int] = mapped_column(default=0)
+    comments_count: Mapped[int] = mapped_column(Integer, default=0)
     options: Mapped[dict] = mapped_column(JSONB, nullable=True)
     start_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
