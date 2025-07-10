@@ -300,7 +300,7 @@
 
 .profile-header-left {
   position: absolute;
-  left: 0;
+  right: 0;
 }
 
 .get-pro-button {
@@ -312,8 +312,8 @@
   cursor: pointer;
   font-weight: 600;
   transition: background 0.3s ease;
-  position: fixed;
-  right: 5%;
+  position: static;
+  left: 5%;
 }
 
 .get-pro-button:hover {
