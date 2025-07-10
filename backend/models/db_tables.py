@@ -9,6 +9,7 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -36,6 +37,7 @@ class User(Base):
     avatar_url: Mapped[str] = mapped_column(String, nullable=False, default=DEFAULT_AVATAR_URL)
     telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
     notifications: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    encrypted_key: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
     votes = relationship("Vote", back_populates="user", cascade="all, delete")

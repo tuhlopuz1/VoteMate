@@ -22,3 +22,5 @@ aws-requests-auth
 httpx-aws-auth
 seaborn
 arq
+eth_account
+cryptography

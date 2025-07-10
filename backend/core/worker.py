@@ -76,7 +76,7 @@ async def notify_user(ctx, user_id: UUID, poll_id: UUID, delay: float):
         "Результаты можно посмотреть по ссылке:\n"
         f"{FRONTEND_URL}/#/poll/{str(poll_id)}",
     )
-    await adapter.update_by_id(Vote, vote.id, {"is_notified": True})
+    await adapter.update_by_id(Vote, vote[0].id, {"is_notified": True})
     return None
 
 
