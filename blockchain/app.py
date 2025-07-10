@@ -113,16 +113,19 @@ def relay_transaction(payload: RelayPayload):
     return {"tx_hash": tx_hash.hex()}
 
 @app.get("/votes")
-def get_votes(options: list = Query(), topic_id: str = Query()):
+def get_votes(options: list[str] = Query(), topic_id: str = Query()):
+    res = {}
     VOTING_CONTRACT = os.getenv("REACT_APP_CONTRACT_ADDRESS")
     GANACHE_URL = os.getenv("REACT_APP_GANACHE_URL")
     print(VOTING_CONTRACT)
     web3 = Web3(Web3.HTTPProvider(GANACHE_URL))
     with open(os.path.join(os.path.dirname(__file__), 'abi.json')) as f:
         abi = json.load(f)
-    voting_contract = web3.eth.contract(address=VOTING_CONTRACT, abi=abi)
-    votes = voting_contract.functions.getVotes(topic_id, option).call()
-    return {"votes": votes}
+    for option in options:
+        voting_contract = web3.eth.contract(address=VOTING_CONTRACT, abi=abi)
+        votes = voting_contract.functions.getVotes(topic_id, option).call()
+        res[option] = votes
+    return JSONResponse(content=res)
 
 @app.get("/adresses")
 def send_adresses():

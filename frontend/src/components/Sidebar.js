@@ -4,10 +4,10 @@ import { FiUser, FiTrendingUp, FiSearch, FiSettings, FiMenu, FiX, FiStar, FiPlus
 import '../styles/sidebar.css';
 
 const Sidebar = () => {
-  
+
   const [isOpen, setIsOpen] = useState(false);
-  
-  
+
+
   const menuItems = [
     { path: '/home', icon: <FiHome size={20} />, label: 'Home' },
     { path: '/trending', icon: <FiTrendingUp size={20} />, label: 'Trending' },
@@ -24,7 +24,7 @@ const Sidebar = () => {
     localStorage.clear();
     window.location.href = ""
   }
-  
+
 
   return (
     <>
@@ -40,18 +40,18 @@ const Sidebar = () => {
 
       {/* Sidebar backdrop for mobile */}
       {isOpen && (
-        <div 
+        <div
           className="sidebar-backdrop"
           onClick={toggleSidebar}
         ></div>
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`sidebar ${isOpen ? 'open' : ''}`}
       >
         <div className="sidebar-content">
-          
+
           <div className="sidebar-header">
             <button
               onClick={toggleSidebar}
@@ -59,18 +59,18 @@ const Sidebar = () => {
               >
               <FiX size={25} />
             </button>
-            
+
 
 
           </div>
 
-              
+
 
           <nav className="sidebar-nav">
             <ul>
               {menuItems.map((item) => (
                 <li key={item.path}>
-                  <Link 
+                  <Link
                     to={item.path}
                     className={`menu-item ${window.location.hash === '#'+item.path ? 'active' : ''}`}
                   >
@@ -81,9 +81,9 @@ const Sidebar = () => {
               ))}
             </ul>
           </nav>
-          
+
           <div className="sidebar-footer">
-            <Link 
+            <Link
               href="/"
               className="logout-button"
               onClick={logOut}

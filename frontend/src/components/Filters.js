@@ -56,7 +56,7 @@ const Filters = ({ onApply }) => {
             <h2>Filters</h2>
           </div>
 
-          
+
 
           {/* Tags */}
           <label>Tags:</label>
