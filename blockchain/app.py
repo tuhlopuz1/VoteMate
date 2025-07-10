@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from web3 import Web3
 import json
 import os
 import uvicorn
+import time
 from dotenv import load_dotenv
 from eth_account.messages import encode_typed_data
 from web3.middleware import ExtraDataToPOAMiddleware
@@ -30,15 +32,16 @@ class RelayPayload(BaseModel):
 
 @app.post("/relay")
 def relay_transaction(payload: RelayPayload):
-    RELAY_PRIVATE_KEY = os.getenv("OWNER_PRIVATE_KEY")
-    GANACHE_URL = os.getenv("BLOCKCHAIN_NODE_URL")
-    FORWARDER_ADDRESS = os.getenv("FORWARDER_CONTRACT_ADDRESS")
+    RELAY_PRIVATE_KEY = os.getenv("REACT_APP_OWNER_PRIVATE_KEY")
+    GANACHE_URL = os.getenv("REACT_APP_GANACHE_URL")
+    FORWARDER_ADDRESS = os.getenv("REACT_APP_FORWARDER_CONTRACT_ADDRESS")
     web3 = Web3(Web3.HTTPProvider(GANACHE_URL))
     web3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
     RELAY_ADDRESS = web3.eth.account.from_key(RELAY_PRIVATE_KEY).address
     with open("abi_forwarder.json") as f:
         forwarder_abi = json.load(f)
     forwarder = web3.eth.contract(address=FORWARDER_ADDRESS, abi=forwarder_abi)
+    print(payload.request.from_ad)
     request = {
         "from": payload.request.from_ad,
         "to": payload.request.to,
@@ -96,21 +99,34 @@ def relay_transaction(payload: RelayPayload):
 
 @app.get("/votes")
 def get_votes(option: str = Query(), topic_id: str = Query()):
-    VOTING_CONTRACT = os.getenv("CONTRACT_ADDRESS")
-    GANACHE_URL = os.getenv("BLOCKCHAIN_NODE_URL")
+    VOTING_CONTRACT = os.getenv("REACT_APP_CONTRACT_ADDRESS")
+    GANACHE_URL = os.getenv("REACT_APP_GANACHE_URL")
+    print(VOTING_CONTRACT)
     web3 = Web3(Web3.HTTPProvider(GANACHE_URL))
     with open(os.path.join(os.path.dirname(__file__), 'abi.json')) as f:
         abi = json.load(f)
     voting_contract = web3.eth.contract(address=VOTING_CONTRACT, abi=abi)
-    votes = voting_contract.functions.getVotes(option, topic_id).call()
+    votes = voting_contract.functions.getVotes(topic_id, option).call()
     return {"votes": votes}
 
+@app.get("/adresses")
+def send_adresses():
+    VOTING_ADRESS = os.getenv("REACT_APP_CONTRACT_ADDRESS")
+    FORWARDER_ADRESS = os.getenv("REACT_APP_FORWARDER_CONTRACT_ADDRESS")
+    return JSONResponse(
+        content={
+            "VOTING_ADRESS": VOTING_ADRESS,
+            "FORWARDER_ADRESS": FORWARDER_ADRESS
+        }
+    )
+
 if __name__ == "__main__":
-    if os.getenv("CONTRACT_ADDRESS") is None:
+    time.sleep(10)
+    if os.getenv("REACT_APP_CONTRACT_ADDRESS") is None:
         deploy_contracts()
         base_dir = os.path.dirname(os.path.abspath(__file__))
         env_path = "./.env"
         load_dotenv(env_path)
-        uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("BACKEND_PORT")), reload=False)
+        uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("REACT_APP_BACKEND_PORT")), reload=False)
     else:
-        uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("BACKEND_PORT")), reload=False)
+        uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("REACT_APP_BACKEND_PORT")), reload=False)

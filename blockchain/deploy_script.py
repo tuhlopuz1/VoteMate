@@ -21,7 +21,7 @@ def deploy_contracts():
         load_dotenv(env_path)
         logger.info(f"Загружен .env файл: {env_path}")
 
-        node_url = os.getenv("BLOCKCHAIN_NODE_URL")
+        node_url = os.getenv("REACT_APP_GANACHE_URL")
         logger.info(f"Подключаемся к ноде: {node_url}")
         w3 = Web3(Web3.HTTPProvider(node_url))
         
@@ -34,7 +34,7 @@ def deploy_contracts():
         logger.info(f"ID сети: {w3.eth.chain_id}")
         logger.info(f"Последний блок: {w3.eth.block_number}")
 
-        private_key = os.getenv("OWNER_PRIVATE_KEY")
+        private_key = os.getenv("REACT_APP_OWNER_PRIVATE_KEY")
         if not private_key:
             logger.error("❌ Приватный ключ не найден в .env")
             return
@@ -67,79 +67,6 @@ def deploy_contracts():
         install_solc('0.8.0')
         set_solc_version('0.8.0')
         logger.info("✅ Компилятор установлен и выбран")
-
-        contract_path = os.path.join(base_dir, 'contracts', 'VotingTopic.sol')
-        logger.info(f"Компилируем контракт: {contract_path}")
-        
-        try:
-            with open(contract_path, 'r') as file:
-                source_code = file.read()
-                logger.debug(f"Исходный код:\n{source_code[:200]}...")
-        except Exception as e:
-            logger.error(f"❌ Ошибка чтения файла: {e}")
-            return
-
-        try:
-            compiled_sol = compile_standard({
-                "language": "Solidity",
-                "sources": {"VotingTopic.sol": {"content": source_code}},
-                "settings": {
-                    "outputSelection": {
-                        "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
-                    }
-                }
-            })
-            logger.info("✅ Контракт 1 успешно скомпилирован")
-        except Exception as e:
-            logger.error(f"❌ Ошибка компиляции: {e}")
-            return
-
-        bytecode = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['evm']['bytecode']['object']
-        abi = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['abi']
-        
-        abi_path = os.path.join(base_dir, 'abi.json')
-        with open(abi_path, 'w') as f:
-            json.dump(abi, f)
-        logger.info(f"ABI сохранен в {abi_path}")
-
-        VotingNotary = w3.eth.contract(abi=abi, bytecode=bytecode)
-        nonce = w3.eth.get_transaction_count(account.address)
-        logger.info(f"Nonce: {nonce}")
-
-        transaction = VotingNotary.constructor().build_transaction({
-            'chainId': 1337,
-            'gas': 3000000,
-            'gasPrice': w3.to_wei('25', 'gwei'),
-            'nonce': nonce,
-
-        })
-        
-        logger.info(f"Размер транзакции: {len(transaction['data'])} байт")
-        estimated_gas = w3.eth.estimate_gas(transaction)
-        logger.info(f"Оценка газа: {estimated_gas}")
-
-
-        logger.info("Подписываем транзакцию...")
-        signed_txn = account.sign_transaction(transaction)
-        
-        logger.info("Отправляем транзакцию в сеть...")
-        tx_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
-        logger.info(f"Транзакция отправлена! Хеш: {tx_hash.hex()}")
-
-        logger.info("Ожидаем подтверждения транзакции...")
-        start_time = time.time()
-        tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
-        
-        logger.info(f"✅ Транзакция подтверждена за {time.time() - start_time:.2f} сек")
-        logger.info(f"Блок: {tx_receipt.blockNumber}")
-        logger.info(f"Использовано газа: {tx_receipt.gasUsed}")
-        logger.info(f"Адрес контракта: {tx_receipt.contractAddress}")
-
-        with open(env_path, 'a') as env_file:
-            env_file.write(f'\nCONTRACT_ADDRESS="{tx_receipt.contractAddress}"')
-        logger.info(f"Адрес контракта записан в {env_path}")
-
-
 
         contract_path = os.path.join(base_dir, 'node_modules', '@openzeppelin', 'contracts', 'metatx', 'MinimalForwarder.sol')
         logger.info(f"Компилируем контракт из: {contract_path}")
@@ -220,14 +147,90 @@ def deploy_contracts():
         logger.info(f"Адрес контракта: {tx_receipt.contractAddress}")
 
         with open(env_path, 'a') as env_file:
-            env_file.write(f'\nFORWARDER_CONTRACT_ADDRESS="{tx_receipt.contractAddress}"')
+            env_file.write(f'\nREACT_APP_FORWARDER_CONTRACT_ADDRESS="{tx_receipt.contractAddress}"')
         logger.info(f"Адрес контракта записан в {env_path}")
 
 
-        logger.info("="*50) 
-        logger.info("ДЕПЛОЙ УСПЕШНО ЗАВЕРШЕН!")
-        logger.info("="*50)
+
+
+        contract_path = os.path.join(base_dir, 'contracts', 'VotingTopic.sol')
+        context_path = os.path.join(base_dir, "node_modules", '@openzeppelin', 'contracts', 'context')
+        logger.info(f"Компилируем контракт: {contract_path}")
+        
+        try:
+            with open(contract_path, 'r') as file:
+                source_code = file.read()
+                logger.debug(f"Исходный код:\n{source_code[:200]}...")
+        except Exception as e:
+            logger.error(f"❌ Ошибка чтения файла: {e}")
+            return
+
+        try:
+            compiled_sol = compile_standard({
+                "language": "Solidity",
+                "sources": {"VotingTopic.sol": {"content": source_code}},
+                "settings": {
+                    "outputSelection": {
+                        "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
+                    },
+                    "remappings": [
+                            "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/"
+                    ]
+                }
+            }, base_path=base_dir, allow_paths=[context_path])
+            logger.info("✅ Контракт 1 успешно скомпилирован")
+        except Exception as e:
+            logger.error(f"❌ Ошибка компиляции: {e}")
+            return
+
+        bytecode = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['evm']['bytecode']['object']
+        abi = compiled_sol['contracts']['VotingTopic.sol']['VotingManager']['abi']
+        
+        abi_path = os.path.join(base_dir, 'abi.json')
+        with open(abi_path, 'w') as f:
+            json.dump(abi, f)
+        logger.info(f"ABI сохранен в {abi_path}")
+
+        VotingNotary = w3.eth.contract(abi=abi, bytecode=bytecode)
+        nonce = w3.eth.get_transaction_count(account.address)
+        logger.info(f"Nonce: {nonce}")
+
+        transaction = VotingNotary.constructor(tx_receipt.contractAddress).build_transaction({
+            'chainId': 1337,
+            'gas': 3000000,
+            'gasPrice': w3.to_wei('25', 'gwei'),
+            'nonce': nonce,
+        })
+        
+        logger.info(f"Размер транзакции: {len(transaction['data'])} байт")
+        estimated_gas = w3.eth.estimate_gas(transaction)
+        logger.info(f"Оценка газа: {estimated_gas}")
+
+
+        logger.info("Подписываем транзакцию...")
+        signed_txn = account.sign_transaction(transaction)
+        
+        logger.info("Отправляем транзакцию в сеть...")
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+        logger.info(f"Транзакция отправлена! Хеш: {tx_hash.hex()}")
+
+        logger.info("Ожидаем подтверждения транзакции...")
+        start_time = time.time()
+        tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
+        
+        logger.info(f"✅ Транзакция подтверждена за {time.time() - start_time:.2f} сек")
+        logger.info(f"Блок: {tx_receipt.blockNumber}")
+        logger.info(f"Использовано газа: {tx_receipt.gasUsed}")
+        logger.info(f"Адрес контракта: {tx_receipt.contractAddress}")
+
+        with open(env_path, 'a') as env_file:
+            env_file.write(f'\nREACT_APP_CONTRACT_ADDRESS="{tx_receipt.contractAddress}"')
+        logger.info(f"Адрес контракта записан в {env_path}")
+
+
+
+        
 
     except Exception as e:
         logger.exception("❌ КРИТИЧЕСКАЯ ОШИБКА:")
-        raise
+        logger.error(f"Ошибка: {e}")
