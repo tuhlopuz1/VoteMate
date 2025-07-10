@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
-from core.config import RANDOM_SECRET
 from jose import JWTError, jwt
+
+from backend.core.config import RANDOM_SECRET
 
 
 class TokenManager:
