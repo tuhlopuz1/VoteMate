@@ -1,0 +1,290 @@
+.profile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow-y: auto;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  height: 30dvh;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 24px;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.profile-info p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+.profile-tabs {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+  transition: background-color 0.3s;
+}
+
+.tab-btn.active {
+  border-bottom: 3px solid #333;
+  color: #000;
+}
+
+.tab-btn:hover {
+  background-color: #f9f9f9;
+}
+
+/* ===== VOTE TILES ===== */
+.votes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.vote-card {
+  background-color: #ffffff;
+  border: 2px solid #d1d5db; /* светло-серый */
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.3s, border-color 0.3s;
+  cursor: pointer;
+}
+
+.vote-card:hover {
+  background-color: #d1d5db;
+  border-color: #6b7280;
+}
+
+.vote-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: #60a5fa; /* светло-синий */
+  border-radius: 50%;
+}
+
+.vote-status {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.vote-status.open {
+  color: #10b981; /* зелёный (успешный статус) */
+}
+
+.vote-status.closed {
+  color: #ef4444; /* красный (ошибка/завершён) */
+}
+
+.vote-body h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937; /* тёмно-серый */
+}
+
+.vote-body p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #6b7280; /* серый текст */
+}
+
+.vote-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vote-option {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #374151; /* глубокий серый */
+}
+
+.vote-option.yellow::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #facc15; /* жёлтый (amber-400) */
+  border-radius: 50%;
+}
+
+.vote-option.green::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #34d399; /* зелёный (emerald-400) */
+  border-radius: 50%;
+}
+
+.create-card {
+  border: 2px dashed #d1d5db;
+  background-color: white;
+  color: #4b5563;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 35px);
+}
+
+.vote-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vote-username {
+  font-size: 14px;
+  color: #4b5563; /* серый */
+}
+
+
+.create-card:hover {
+  background-color: #f3f4f6;
+  border-color: #6b7280;
+}
+
+.vote-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.vote-option {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Цветной кружок */
+.vote-option::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Цвета */
+.vote-option.yellow::before {
+  background-color: #facc15; /* Amber-400 */
+}
+
+.vote-option.green::before {
+  background-color: #22c55e; /* Green-500 */
+}
+
+.vote-option.blue::before {
+  background-color: #3b82f6; /* Blue-500 */
+}
+
+.vote-option.red::before {
+  background-color: #ef4444; /* Red-500 */
+}
+
+.vote-option.purple::before {
+  background-color: #8b5cf6; /* Purple-500 */
+}
+
+.vote-option.pink::before {
+  background-color: #ec4899; /* Pink-500 */
+}
+
+.vote-option.orange::before {
+  background-color: #f97316; /* Orange-500 */
+}
+
+
+.create-icon {
+  margin-bottom: 8px;
+  color: #3b82f6;
+}
+
+.create-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+
+/* ===== Responsive ===== */
+@media (orientation: portrait), (max-width: 600px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: auto;
+  }
+
+  .profile-avatar {
+    margin: 0 0 16px 0;
+  }
+
+  .profile-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .votes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
