@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { 
-  FiUserCheck, 
-  FiBarChart2, 
-  FiZap, 
-  FiShield, 
-  FiSend, 
-  FiSliders 
+import {
+  FiUserCheck,
+  FiBarChart2,
+  FiZap,
+  FiShield,
+  FiSend,
+  FiSliders
 } from "react-icons/fi";
 import FeatureCard from "./components/FeatureCard.js";
 import './styles/welcome.css';
@@ -77,7 +77,7 @@ const WelcomePage = () => {
         <div className="features-section">
           <div className="features-grid">
             {features.map((feature, index) => (
-              <FeatureCard 
+              <FeatureCard
                 key={index}
                 icon={feature.icon}
                 title={feature.title}
