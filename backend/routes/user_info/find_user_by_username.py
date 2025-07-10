@@ -25,4 +25,4 @@ async def find_user(username: str, user: Annotated[User, Depends(check_user)]):
         )
         users.append(user_model)
     users.sort(key=lambda x: x.similarity, reverse=True)
-    return res
+    return users
