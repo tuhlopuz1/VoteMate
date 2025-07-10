@@ -110,5 +110,18 @@ class PollSchema(BaseModel):
     private: bool
     is_voted: Optional[bool] = None
     is_active: bool = False
+    hashtags: Optional[list] = None
 
     model_config = {"from_attributes": True}
+
+
+class PasswordUpdate(BaseModel):
+    old_password: str
+    new_password: str
+
+
+class FilterPollSchema(BaseModel):
+    tags: Optional[list] = None
+    poll_status: Optional[str] = None
+    voting_status: Optional[str] = None
+    sort_by: Optional[str] = None
