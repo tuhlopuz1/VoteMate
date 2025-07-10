@@ -96,7 +96,7 @@ async function Vote(topicId, option) {
         const request_to_send = await safeStringify({ request, signature });
 
         try {
-            const relayRes = await fetch(`${BackendUrl}:${BACKEND_PORT}/relay`, {
+            const relayRes = await fetch(`${BackendUrl}/relay`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: request_to_send,
