@@ -54,7 +54,7 @@ async def watch_polls_callback(callback: types.CallbackQuery):
     await callback.answer()
     user = await adapter.get_by_value(User, "telegram_id", callback.message.chat.id)
     if not user:
-        await callback.message.answer("Судя по всему, вы не зарегистрированы на нашей платформе.")
+        await callback.message.answer("Похоже что вы ещё не зарегистрированы в нашем сервисе.")
     elif not user[0].notifications:
         user = user[0]
         await callback.message.answer(
@@ -82,8 +82,16 @@ async def statistics_callback(callback: types.CallbackQuery, state: FSMContext):
 async def handle_poll_name(message: types.Message, state: FSMContext):
     poll_name = message.text.strip()
     poll = await adapter.find_similar_value(Poll, "name", poll_name, similarity_threshold=70)
+    user = await adapter.get_by_value(User, "telegram_id", message.chat.id)
+    if not user:
+        await message.answer("Похоже что вы ещё не зарегистрированы в нашем сервисе.")
+        return None
     if poll:
+        user = user[0]
         poll = poll[0]
+        if poll["user_id"] != user.id:
+            await message.answer("Нам не удалось найти принадлежащего вам опроса с таким именем")
+            return None
         poll_dict = {
             "id": str(poll["id"]),
             "name": poll["name"],
