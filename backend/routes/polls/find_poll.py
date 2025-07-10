@@ -46,14 +46,21 @@ async def prepare_poll_response(poll: Poll, user: User) -> PollSchema:
     poll_sch = PollSchema.model_validate(poll)
 
     # Устанавливаем флаги
-    poll_sch.is_active = poll["start_date"] <= now <= poll["end_date"]
-    poll_sch.is_voted = (
-        await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll["id"]}) is not None
-    )
-
-    # Если пользователь не автор и опрос еще активен
-    if user.id != poll["user_id"] and now < poll["end_date"]:
-        poll_sch.options = list(poll.options.keys()) if poll.options else []
+    try:
+        poll_sch.is_active = poll["start_date"] <= now <= poll["end_date"]
+        poll_sch.is_voted = (
+            await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll["id"]})
+            is not None
+        )
+        if user.id != poll["user_id"] and now < poll["end_date"]:
+            poll_sch.options = list(poll.options.keys()) if poll.options else []
+    except Exception:
+        poll_sch.is_active = poll.start_date <= now <= poll.end_date
+        poll_sch.is_voted = (
+            await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id}) is not None
+        )
+        if user.id != poll.user_id and now < poll.end_date:
+            poll_sch.options = list(poll.options.keys()) if poll.options else []
 
     return poll_sch
 
@@ -83,9 +90,12 @@ async def search_polls(user: Annotated[User, Depends(check_user)], search_params
     filtered_polls = []
     for poll in polls:
         # Проверка приватности: не приватные или созданные пользователем
-        if not poll["private"] and poll["user_id"] != user.id:
-            continue
-
+        try:
+            if not poll["private"] and poll["user_id"] != user.id:
+                continue
+        except Exception:
+            if not poll.private and poll.user_id != user.id:
+                continue
         # Проверка статуса опроса
         if not await check_poll_status(poll, search_params.poll_status):
             continue
@@ -96,7 +106,10 @@ async def search_polls(user: Annotated[User, Depends(check_user)], search_params
 
         # Проверка тегов
         if search_params.tags:
-            poll_tags = poll["hashtags"] or []
+            try:
+                poll_tags = poll["hashtags"] or []
+            except Exception:
+                poll_tags = poll.hashtags or []
             if not set(search_params.tags).issubset(poll_tags):
                 continue
 
@@ -104,9 +117,15 @@ async def search_polls(user: Annotated[User, Depends(check_user)], search_params
 
     # Применяем сортировку
     if search_params.sort_by == "popularity_asc":
-        filtered_polls.sort(key=lambda x: x.votes_count)
+        try:
+            filtered_polls.sort(key=lambda x: x["votes_count"])
+        except Exception:
+            filtered_polls.sort(key=lambda x: x.votes_count)
     elif search_params.sort_by == "popularity_desc":
-        filtered_polls.sort(key=lambda x: x.votes_count, reverse=True)
+        try:
+            filtered_polls.sort(key=lambda x: x["votes_count"], reverse=True)
+        except Exception:
+            filtered_polls.sort(key=lambda x: x.votes_count, reverse=True)
 
     # Подготавливаем ответ
     result = [await prepare_poll_response(poll, user) for poll in filtered_polls]
