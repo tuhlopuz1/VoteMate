@@ -101,7 +101,7 @@ class PollSchema(BaseModel):
     id: UUID
     name: str
     votes_count: int
-    comment_count: int
+    comments_count: int
     user_id: UUID
     user_username: str
     description: str
