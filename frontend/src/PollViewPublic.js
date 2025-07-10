@@ -279,31 +279,83 @@ const PollViewPublic = () => {
           </div>
           <h2>Comments: {comments.length}</h2>
           <div className="comments-list">
-            {comments.length === 0 ? (
-              <p className="no-comments">No comments yet.</p>
-            ) : (
-              comments.map((comment, i) => (
-            <div key={i} className="comment-item">
-              <Link to={`/user/${comment.user_username}`}>
-                <img
-                  src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
-                  alt={comment.user_id}
-                  className="comment-avatar"
-                />
-              </Link>
-              <div className="comment-body">
-                <div className="comment-header">
-                  <Link to={`/user/${comment.user_username}`} className="black-link">
-                    <strong>{comment.user_username}</strong>
-                  </Link>
+{comments.map((comment, i) => {
+  const isMyComment = comment.user_username === localStorage.getItem('username');
 
-                  
-                </div>
-                <p className="comment-text">{comment.content}</p>
+  return (
+    <div key={i} className="comment-item">
+      <Link to={`/user/${comment.user_username}`}>
+        <img
+          src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
+          alt={comment.user_id}
+          className="comment-avatar"
+        />
+      </Link>
+
+      <div className="comment-body">
+        <div className="comment-header">
+          <Link to={`/user/${comment.user_username}`} className="black-link">
+            <strong>{comment.user_username}</strong>
+          </Link>
+{comments.map((comment, i) => {
+  const isMyComment = comment.user_username === localStorage.getItem('username');
+
+  return (
+    <div key={i} className="comment-item">
+      <Link to={`/user/${comment.user_username}`}>
+        <img
+          src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
+          alt={comment.user_id}
+          className="comment-avatar"
+        />
+      </Link>
+
+      <div className="comment-body">
+        <div className="comment-header">
+          <Link to={`/user/${comment.user_username}`} className="black-link">
+            <strong>{comment.user_username}</strong>
+          </Link>
+
+          {isMyComment && (
+            <div className="comment-dropdown">
+              <button className="comment-dropdown-toggle">⋮</button>
+              <div className="comment-dropdown-menu">
+                <button
+                  onClick={async () => {
+                    try {
+                      const res = await apiRequest({
+                        url: `https://api.vote.vickz.ru/api/v2/delete-comment/${comment.id}`,
+                        method: 'DELETE',
+                        auth: true
+                      });
+
+                      if (!res.ok) throw new Error('Failed to delete');
+
+                      fetchComments(); // refresh comment list
+                    } catch (err) {
+                      alert('Ошибка при удалении комментария');
+                    }
+                  }}
+                >
+                  Delete this comment
+                </button>
               </div>
             </div>
-          ))
-            )}
+          )}
+        </div>
+        <p className="comment-text">{comment.content}</p>
+      </div>
+    </div>
+  );
+})}
+
+        </div>
+        <p className="comment-text">{comment.content}</p>
+      </div>
+    </div>
+  );
+})}
+
           </div>
         </div>
       </div>
