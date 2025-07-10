@@ -4,7 +4,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiShare2 } from 'react-icons/fi';
+import { FiArrowLeft, FiShare2, FiTrash } from 'react-icons/fi';
 import Swal from 'sweetalert2';
 import apiRequest from './components/Requests';
 import './styles/pollviewcreator.css';
@@ -171,6 +171,41 @@ const PollViewCreator = () => {
     }
   };
 
+  const handleDeletePoll = async () => {
+  const confirm = await Swal.fire({
+    title: 'Delete Poll?',
+    text: 'This action is irreversible. All data will be lost.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it',
+    cancelButtonText: 'Cancel',
+  });
+
+  if (confirm.isConfirmed) {
+    try {
+      const res = await apiRequest({
+        url: `https://api.vote.vickz.ru/api/v2/delete-poll/${poll_id}`,
+        method: 'DELETE',
+        auth: true,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to delete poll');
+      }
+
+      Swal.fire('Poll deleted', '', 'success').then(() => {
+        navigate('/home'); // или куда ты хочешь направить пользователя
+      });
+    } catch (err) {
+      Swal.fire('Error', err.message, 'error');
+    }
+  }
+};
+
+
+
   return (
     <div className="main-layout">
       <Sidebar />
@@ -251,6 +286,15 @@ const PollViewCreator = () => {
                 End Poll Early
               </button>
             )}
+            <button
+              className="export-button"
+              style={{ backgroundColor: '#b91c1c' }}
+              onClick={handleDeletePoll}
+            >
+              <FiTrash style={{ marginRight: 6 }} />
+              Delete Poll
+            </button>
+
           </div>
         </div>
 
