@@ -1,9 +1,11 @@
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import (
     BigInteger,
     Boolean,
+    DateTime,
     Enum,
     ForeignKey,
     Integer,
@@ -37,6 +39,7 @@ class User(Base):
 
     polls = relationship("Poll", backref="user", cascade="all, delete")
     votes = relationship("Vote", back_populates="user", cascade="all, delete")
+    comments = relationship("Comment", back_populates="user", cascade="all, delete")
 
 
 class Poll(Base):
@@ -50,6 +53,7 @@ class Poll(Base):
     )
     user_username: Mapped[str] = mapped_column(String, nullable=False)
     votes_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    comments: Mapped[int] = mapped_column(default=0)
     options: Mapped[dict] = mapped_column(JSONB, nullable=True)
     start_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
@@ -57,6 +61,7 @@ class Poll(Base):
     is_notified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     votes = relationship("Vote", back_populates="poll", cascade="all, delete")
+    comment_list = relationship("Comment", back_populates="poll", cascade="all, delete")
 
 
 class Vote(Base):
@@ -81,3 +86,36 @@ class Vote(Base):
     poll = relationship("Poll", back_populates="votes")
 
     __table_args__ = (UniqueConstraint("user_id", "poll_id", name="uq_vote_user_poll"),)
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    poll_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        ForeignKey("polls.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    user_name: Mapped[str] = mapped_column(String, nullable=False)
+    user_username: Mapped[str] = mapped_column(String, nullable=False)
+    parent_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid,
+        ForeignKey("comments.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    parent_username: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    replies_count: Mapped[int] = mapped_column(default=0, nullable=False)
+
+    user = relationship("User", back_populates="comments")
+    poll = relationship("Poll", back_populates="comment_list")
