@@ -100,7 +100,7 @@ class Comment(Base):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
         Uuid,
-        ForeignKey("user.id", ondelete="CASCADE"),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
