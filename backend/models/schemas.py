@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class Role(str, Enum):
     USER = "USER"
-    ADMIN = "ADMIN"
+    PRO = "PRO"
 
 
 class UsernameScheme(BaseModel):
