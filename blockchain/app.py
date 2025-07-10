@@ -10,11 +10,21 @@ from dotenv import load_dotenv
 from eth_account.messages import encode_typed_data
 from web3.middleware import ExtraDataToPOAMiddleware
 from deploy_script import deploy_contracts
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
+
 app = FastAPI()
 base_dir = os.path.dirname(os.path.abspath(__file__))
 env_path = "./.env"
 load_dotenv(env_path)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
@@ -29,6 +39,11 @@ class ForwardRequest(BaseModel):
 class RelayPayload(BaseModel):
     request: ForwardRequest
     signature: str
+
+@app.get("/")
+async def redirect():
+    return RedirectResponse("/docs")
+
 
 @app.post("/relay")
 def relay_transaction(payload: RelayPayload):
@@ -98,7 +113,7 @@ def relay_transaction(payload: RelayPayload):
     return {"tx_hash": tx_hash.hex()}
 
 @app.get("/votes")
-def get_votes(option: str = Query(), topic_id: str = Query()):
+def get_votes(options: list = Query(), topic_id: str = Query()):
     VOTING_CONTRACT = os.getenv("REACT_APP_CONTRACT_ADDRESS")
     GANACHE_URL = os.getenv("REACT_APP_GANACHE_URL")
     print(VOTING_CONTRACT)
