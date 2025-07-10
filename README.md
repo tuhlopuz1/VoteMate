@@ -1,6 +1,11 @@
 # VoteMate
 #### Команда - Хакатоновые монстры
-<a id="title1" href="https://vickz.ru/#/"><img src="https://github.com/asdfrewqha/blockchain-test/blob/main/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2017.13.10.png"></img></a>
+<a id="title1" href="https://vickz.ru/#/"><img src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2017.13.10.png"></img></a>
+# Запуск проекта
+
+
+
+
 
 # Задача VoteMate
 
@@ -15,10 +20,17 @@
 #### [Зарегистрироваться](https://vickz.ru/#/signup)
 > Уже сейчас реализована регистрация через мессенджер Телеграм - [@SecureVoteBlockchainBot](t.me/SecureVoteBlockchainBot)
 > Чтобы успешно зарегистрироваться на нашем сайте нужно:
-> 1. Перейти на https://vickz.ru/#/signup
+> 1. Перейти на [https://vickz.ru/#/signup](https://vickz.ru/#/signup)
 > 2. Ввести свое имя
 > 3. Логин
 > 4. Пароль
+
 > 5. После перейти в нашего [бота](t.me/SecureVoteBlockchainBot) и прописать `/start`
+<img src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2017.42.24.png"></img>
 > 6. Вы получите код, его надо вставить в окно на сайте
-> 7. ***Успешно!***
+<img src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2014.09.34.jpg"></img>
+<img src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/photo_2025-07-10_17-45-56.jpg"></img>
+> 7. **Успешно!**
+> 8. Теперь оформите свой профиль)
+<img src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2017.47.12.png"></img>
+
