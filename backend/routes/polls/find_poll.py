@@ -127,16 +127,19 @@ async def search_polls(user: Annotated[User, Depends(check_user)], search_params
         filtered_polls.append(poll)
 
     # Применяем сортировку
-    if search_params.sort_by == "popularity_asc":
-        if isinstance(filtered_polls[0], dict):
-            filtered_polls.sort(key=lambda x: x["votes_count"])
-        else:
-            filtered_polls.sort(key=lambda x: x.votes_count)
-    elif search_params.sort_by == "popularity_desc":
-        if isinstance(filtered_polls[0], dict):
-            filtered_polls.sort(key=lambda x: x["votes_count"], reverse=True)
-        else:
-            filtered_polls.sort(key=lambda x: x.votes_count, reverse=True)
+    if filtered_polls:
+        if search_params.sort_by == "popularity_asc":
+            if isinstance(filtered_polls[0], dict):
+                filtered_polls.sort(key=lambda x: x["votes_count"])
+            else:
+                filtered_polls.sort(key=lambda x: x.votes_count)
+        elif search_params.sort_by == "popularity_desc":
+            if isinstance(filtered_polls[0], dict):
+                filtered_polls.sort(key=lambda x: x["votes_count"], reverse=True)
+            else:
+                filtered_polls.sort(key=lambda x: x.votes_count, reverse=True)
+    else:
+        return badresponse("Polls not found", 404)
 
     # Подготавливаем ответ
     result = [await prepare_poll_response(poll, user) for poll in filtered_polls]

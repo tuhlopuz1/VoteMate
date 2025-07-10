@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
   ganache:
     image: trufflesuite/ganache:v7.9.1
-    container_name: ganache
+    container_name: ganache-container
     ports:
       - "8545:8545"
     command:
@@ -77,10 +77,8 @@ services:
       - --logging.debug=true
 
   blockchain:
-    build:
-      context: ../blockchain
-      dockerfile: Dockerfile
-    container_name: blockchain
+    image: asdfrewqha/blockchain_blockchain:latest
+    container_name: blockchain-container
     ports:
       - "2000:2000"
     environment:
