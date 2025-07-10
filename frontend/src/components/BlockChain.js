@@ -93,7 +93,6 @@ async function Vote(topicId, option) {
         };
 
         const request_to_send = await safeStringify({ request, signature });
-        console.log("Request to send:", request_to_send);
 
         try {
             const relayRes = await fetch(`${BackendUrl}:${BACKEND_PORT}/relay`, {
@@ -108,7 +107,6 @@ async function Vote(topicId, option) {
 
             const relayResult = await relayRes.json();
             console.log("Relay tx result:", relayResult);
-
 
 
             return {

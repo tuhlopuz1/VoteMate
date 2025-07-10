@@ -20,6 +20,10 @@ const PollViewPublic = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
+  const [commentLoading, setCommentLoading] = useState(false);
+
   useEffect(() => {
     const fetchPoll = async () => {
       try {
@@ -44,6 +48,27 @@ const PollViewPublic = () => {
 
     fetchPoll();
   }, [poll_id]);
+
+  const fetchComments = async () => {
+    try {
+      const res = await apiRequest({
+        url: `https://api.vote.vickz.ru/api/v2/get-comments/${poll_id}`,
+        method: 'GET',
+        auth: true
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch comments');
+
+      const data = await res.json();
+      setComments(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (pollData) fetchComments();
+  }, [pollData]);
 
   const handleVote = async () => {
     if (!selectedOption) {
@@ -73,8 +98,32 @@ const PollViewPublic = () => {
       const updated = await response.json();
       setPollData(updated);
     } catch (err) {
-      alert('voted successfullly')
-      window.location.href = '/#/home'
+      alert('Voted successfully');
+      window.location.href = '/#/home';
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim()) return;
+
+    setCommentLoading(true);
+    try {
+      const res = await apiRequest({
+        url: `https://api.vote.vickz.ru/api/v2/add-comment/${poll_id}`,
+        method: 'POST',
+        body: commentText,
+        auth: true
+      });
+
+      if (!res.ok) throw new Error('Failed to post comment');
+
+      setCommentText('');
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to post comment');
+    } finally {
+      setCommentLoading(false);
     }
   };
 
@@ -195,7 +244,6 @@ const PollViewPublic = () => {
                 </label>
               </div>
 
-
               <button
                 className="submit-button"
                 onClick={handleVote}
@@ -207,6 +255,34 @@ const PollViewPublic = () => {
               {error && <p className="error-text">{error}</p>}
             </>
           )}
+        </div>
+
+        {/* COMMENTS SECTION */}
+        <div className="comments-section">
+          <h2>Comments</h2>
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">No comments yet.</p>
+            ) : (
+              comments.map((comment, idx) => (
+                <div className="comment" key={idx}>
+                  <span className="comment-user">{comment.username}</span>
+                  <p className="comment-body">{comment.text}</p>
+                </div>
+              ))
+            )}
+          </div>
+          <div className="comment-input">
+            <textarea
+              placeholder="Write a comment..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              rows={3}
+            />
+            <button onClick={handleCommentSubmit} disabled={commentLoading || !commentText.trim()}>
+              {commentLoading ? 'Posting...' : 'Post Comment'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

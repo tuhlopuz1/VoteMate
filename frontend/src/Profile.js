@@ -103,7 +103,7 @@ const ProfilePage = () => {
         >
           <div className="vote-header">
             <div className="vote-user">
-              <img src={avatarUrl} alt="User" className="vote-avatar" />
+              <img src={`https://blockchain-pfps.s3.regru.cloud/${poll.user_username}/avatar_${poll.user_id}.png`} alt="User" className="vote-avatar" />
               <span className="vote-username">{poll.user_username || username}</span>
             </div>
             <span className={`vote-status ${isPollOpen ? 'open' : 'closed'}`}>
