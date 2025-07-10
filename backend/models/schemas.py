@@ -40,6 +40,7 @@ class UserRegResponse(BaseModel):
     access_token: str
     refresh_token: str
     telegram_id: int
+    private_key: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -75,6 +76,7 @@ class UserLogin(BaseModel):
 class Tokens(BaseModel):
     access_token: str
     refresh_token: str
+    private_key: str
 
 
 class UpdateProfile(BaseModel):
@@ -101,6 +103,7 @@ class PollSchema(BaseModel):
     id: UUID
     name: str
     votes_count: int
+    comments_count: int
     user_id: UUID
     user_username: str
     description: str

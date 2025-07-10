@@ -23,3 +23,5 @@ httpx-aws-auth
 seaborn
 arq
 reportlab
+eth_account
+cryptography

@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends
 
 from backend.core.dependencies import badresponse, check_user, okresp
 from backend.models.db_adapter import adapter
-from backend.models.db_tables import Poll, User
-from backend.routes.polls.tasks import enqueue_notify_author
+from backend.models.db_tables import Poll, User, Vote
+from backend.routes.polls.tasks import enqueue_notify_author, enqueue_notify_user
 
 router = APIRouter()
 
@@ -24,4 +24,9 @@ async def end_vote(poll_id: UUID, user: Annotated[User, Depends(check_user)]):
     poll.end_date = datetime.now(timezone.utc)
     await adapter.update_by_id(Poll, poll_id, {"end_date": poll.end_date})
     await enqueue_notify_author(user.telegram_id, poll_id, 0.0)
+    votes = await adapter.get_by_value(Vote, "poll_id", poll_id)
+    if votes:
+        for vote in votes:
+            if vote.notification:
+                await enqueue_notify_user(user_id=vote.user_id, poll_id=poll_id, delay=0.0)
     return okresp(200, "Poll ended")
