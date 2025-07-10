@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from backend.core.dependencies import badresponse, check_user
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User
+from backend.models.schemas import UserFindResponse
 
 router = APIRouter()
 
@@ -21,5 +22,9 @@ async def get_trend_user(user: Annotated[User, Depends(check_user)]):
     data = data[:20]
     res = []
     for i in data:
-        res.append(await adapter.get_by_id(User, i[0]))
+        res.append(
+            UserFindResponse.model_validate(
+                await adapter.get_by_id(User, i[0]), from_attributes=True
+            )
+        )
     return res
