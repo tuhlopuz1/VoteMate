@@ -1,0 +1,22 @@
+.swagger-area {
+    width: calc(100% - 256px);
+    position: fixed;
+    top: 0 ;
+    right: 0;
+    height: 100dvh;
+    overflow: auto;
+}
+.main-layout {
+    position: relative;
+}
+
+#swagger-ui {
+    width: 100%;
+    height: 100dvh;
+}
+
+@media (orientation: portrait) {
+    .swagger-area {
+        width: 100%;
+    }
+}

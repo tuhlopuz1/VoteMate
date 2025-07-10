@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 
 from backend.core.dependencies import badresponse
+from backend.models.cryptography import decrypt_secret
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import User
 from backend.models.hashing import verify_password
@@ -31,7 +32,8 @@ async def token(user: UserLogin):
         {"sub": str(bd_user.id), "type": "refresh"},
         TokenManager.REFRESH_TOKEN_EXPIRE_MINUTES,
     )
+    private_key = decrypt_secret(bd_user.encrypted_key, user.password)
 
-    tokens = Tokens(access_token=access_token, refresh_token=refresh_token)
+    tokens = Tokens(access_token=access_token, refresh_token=refresh_token, private_key=private_key)
 
     return tokens

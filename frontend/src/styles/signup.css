@@ -1,0 +1,171 @@
+
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    /* background-image: url(https://cdn.deepseek.com/blog/banner-background.webp); */
+    background-image: url(../../public/banner-background.webp);
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-position: center; 
+    backdrop-filter: blur(10px);
+  }
+
+
+  
+  .signup-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 32px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .signup-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .blue-link {
+    color: #007bff;
+  }
+
+  .logo-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  
+  .signup-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #111827;
+  }
+  
+  .login-suggest {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .server-error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .link {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }
+  
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-input {
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+  
+  .form-input:focus {
+    border-color: #2563eb;
+    outline: none;
+  }
+  
+  .input-error {
+    border-color: #f87171 !important;
+  }
+  
+  .error-text {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #dc2626;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .submit-button {
+    padding: 10px;
+    background-color: #2563eb;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  
+  #close-svg {
+    width: 7%;
+    color: black;
+  }
+
+.avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+  border: 2px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skip-button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 0;
+  background-color: transparent;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.signup-form .form-group {
+  margin-bottom: 20px;
+}
+
+.signup-form textarea {
+  resize: none;
+}

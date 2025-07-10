@@ -1,0 +1,122 @@
+/* pollviewpublic.css – дополняет pollviewcreator.css */
+
+.options-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.poll-author {
+  cursor: pointer;
+}
+
+.poll-icon {
+  cursor: pointer;
+}
+
+.option-radio {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.option-radio:hover {
+  border-color: #6366f1;
+  background-color: #f9fafb;
+}
+
+.option-radio input[type="radio"] {
+  accent-color: #6366f1;
+  transform: scale(1.2);
+}
+
+.options-list {
+  margin-top: 1rem;
+}
+
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.option-color {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.already-voted-message {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #4B5563;
+  background-color: #F3F4F6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+
+.submit-button {
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #4338ca;
+}
+
+.submit-button:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
+
+.notification-checkbox {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #374151; /* Tailwind gray-700 */
+  gap: 8px;
+}
+
+.notification-checkbox input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4F46E5; /* Indigo */
+  cursor: pointer;
+}
+
+.notification-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+

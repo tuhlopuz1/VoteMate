@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -19,14 +19,12 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
         username = "@" + username
 
     polls = await adapter.get_by_value(Poll, "user_username", username)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     result: list[PollSchema] = []
 
     for poll in polls:
         poll_sch = PollSchema.model_validate(poll)
-        poll_sch.is_active = bool(
-            poll.start_date and poll.start_date < now and poll.end_date and now < poll.end_date
-        )
+        poll_sch.is_active = bool(poll.start_date < now and now < poll.end_date)
 
         if user.username == username:
             result.append(poll_sch)
@@ -35,7 +33,7 @@ async def get_poll_by_user_id(username: str, user: Annotated[User, Depends(check
         if poll_sch.options and now < poll.end_date:
             poll_sch.options = list(poll_sch.options.keys())
 
-        if user:
+        if user and not user.id == poll.user_id:
             vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id})
             if vote:
                 poll_sch.is_voted = True

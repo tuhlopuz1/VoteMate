@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Union
+from typing import List, Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -40,6 +40,7 @@ class UserRegResponse(BaseModel):
     access_token: str
     refresh_token: str
     telegram_id: int
+    private_key: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -52,6 +53,7 @@ class UserProfileResponse(BaseModel):
     description: str = ""
     voted_polls: Optional[int] = 0
     created_polls: Optional[int] = 0
+    notifications: bool
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -74,16 +76,17 @@ class UserLogin(BaseModel):
 class Tokens(BaseModel):
     access_token: str
     refresh_token: str
+    private_key: str
 
 
 class UpdateProfile(BaseModel):
     name: Optional[str] = None
-    username: Optional[str] = Field(
-        default=None,
-        min_length=3,
-        max_length=20,
-        pattern=r"^[a-zA-Z0-9_]+$",
-    )
+    username: Optional[str] = None  # Field(
+    #     default=None,
+    #     min_length=3,
+    #     max_length=20,
+    #     pattern=r"^[a-zA-Z0-9_]+$",
+    # )
     description: Optional[str] = None
 
 
@@ -100,6 +103,7 @@ class PollSchema(BaseModel):
     id: UUID
     name: str
     votes_count: int
+    comments_count: int
     user_id: UUID
     user_username: str
     description: str
@@ -109,5 +113,19 @@ class PollSchema(BaseModel):
     private: bool
     is_voted: Optional[bool] = None
     is_active: bool = False
+    hashtags: Optional[list] = None
 
     model_config = {"from_attributes": True}
+
+
+class PasswordUpdate(BaseModel):
+    old_password: str
+    new_password: str
+
+
+class SearchPollSchema(BaseModel):
+    poll_name: Optional[str] = None
+    tags: Optional[List[str]] = None
+    poll_status: Optional[str] = None
+    voting_status: Optional[str] = None
+    sort_by: Optional[str] = None

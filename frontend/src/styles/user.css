@@ -1,0 +1,26 @@
+@import './profile.css';
+
+/* Можно добавить небольшой отступ для обрамления */
+.profile-content {
+  padding-bottom: 24px;
+}
+
+/* При желании можно стилизовать вкладку */
+.tab-btn {
+  font-weight: 500;
+  color: #374151;
+}
+
+.tab-btn.active {
+  border-bottom: 3px solid #3b82f6;
+  color: #111827;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px;
+  padding-bottom: 4px;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}

@@ -13,5 +13,6 @@ router = APIRouter()
 async def find_user(username: str, user: Annotated[User, Depends(check_user)]):
     if not user:
         return badresponse("Unauthorized", 401)
-    res = await adapter.find_similar_value(User, "username", f"@{username}")
+    res = await adapter.find_similar_value(User, "username", f"{username}")
+    res.sort(key=lambda x: x["similarity"], reverse=True)
     return res
