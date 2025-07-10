@@ -67,8 +67,8 @@ async def notify_user(ctx, user_id: UUID, poll_id: UUID, delay: float):
     await asyncio.sleep(delay)
     poll = await adapter.get_by_id(Poll, poll_id)
     user = await adapter.get_by_id(User, user_id)
-    vote = await adapter.get_by_values(Vote, {"user_id": user_id, "poll_id": poll_id})
-    logger.info(vote)
+    vote = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id})
+    logger.info(f"{vote}\n{user_id}\n{poll_id}")
     if not vote[0].is_notified:
         return None
     await bot.send_message(
