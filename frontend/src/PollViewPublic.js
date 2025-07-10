@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import apiRequest from './components/Requests';
 import {
@@ -8,6 +8,8 @@ import {
 import './styles/pollviewcreator.css';
 import './styles/pollviewpublic.css';
 import { FiArrowLeft } from 'react-icons/fi';
+import Vote from './components/BlockChain';
+
 
 const PollViewPublic = () => {
   const { poll_id } = useParams();
@@ -75,6 +77,8 @@ const PollViewPublic = () => {
       setError('Please select an option');
       return;
     }
+
+    Vote(poll_id, selectedOption)
 
     setVoting(true);
     setError('');
@@ -259,19 +263,6 @@ const PollViewPublic = () => {
 
         {/* COMMENTS SECTION */}
         <div className="comments-section">
-          <h2>Comments</h2>
-          <div className="comments-list">
-            {comments.length === 0 ? (
-              <p className="no-comments">No comments yet.</p>
-            ) : (
-              comments.map((comment, idx) => (
-                <div className="comment" key={idx}>
-                  <span className="comment-user">{comment.username}</span>
-                  <p className="comment-body">{comment.text}</p>
-                </div>
-              ))
-            )}
-          </div>
           <div className="comment-input">
             <textarea
               placeholder="Write a comment..."
@@ -282,6 +273,34 @@ const PollViewPublic = () => {
             <button onClick={handleCommentSubmit} disabled={commentLoading || !commentText.trim()}>
               {commentLoading ? 'Posting...' : 'Post Comment'}
             </button>
+          </div>
+          <h2>Comments: {comments.length}</h2>
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">No comments yet.</p>
+            ) : (
+              comments.map((comment, i) => (
+            <div key={i} className="comment-item">
+              <Link to={`/user/${comment.user_username}`}>
+                <img
+                  src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
+                  alt={comment.user_id}
+                  className="comment-avatar"
+                />
+              </Link>
+              <div className="comment-body">
+                <div className="comment-header">
+                  <Link to={`/user/${comment.user_username}`} className="black-link">
+                    <strong>{comment.user_username}</strong>
+                  </Link>
+
+                  
+                </div>
+                <p className="comment-text">{comment.content}</p>
+              </div>
+            </div>
+          ))
+            )}
           </div>
         </div>
       </div>

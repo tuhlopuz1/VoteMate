@@ -1,8 +1,4 @@
 import { ethers } from "ethers";
-import dotenv from 'dotenv';
-dotenv.config();
-
-
 
 async function Vote(topicId, option) {
     async function sendMetaTx(data) {
@@ -16,20 +12,24 @@ async function Vote(topicId, option) {
         }
 
         async function safeStringify(obj) {
-            return JSON.stringify(obj, (key, value) => 
+            return JSON.stringify(obj, (key, value) =>
                 typeof value === 'bigint' ? value.toString() : value
             );
         }
 
         async function loadWalletFromLocalStorage() {
-            //const privateKey = localStorage.getItem('privateKey');
-            const privateKey = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b1138b37e0e6f314eb0c53f3e8a3";
+            // const privateKey = localStorage.getItem('privateKey');
+            const privateKey = localStorage.getItem('private_key');
+            if (!privateKey) {
+                window.location.href = '/'
+            }
             if (!privateKey) {
                 throw new Error("Wallet not found in localStorage");
             }
             const wallet = new ethers.Wallet(privateKey);
             return wallet;
         }
+
         const clientWallet = await loadWalletFromLocalStorage();
         const clientAddress = clientWallet.address;
 
@@ -37,21 +37,21 @@ async function Vote(topicId, option) {
         const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT;
         const BLOCKCHAIN_NODE_URL = process.env.REACT_APP_BLOCKCHAIN_NODE_URL;
 
-        const adresses_url = `${BackendUrl}:${BACKEND_PORT}/adresses`
+        const adresses_url = `${BackendUrl}:${BACKEND_PORT}/adresses`;
         console.log("Fetching addresses from:", adresses_url);
-        const response = await fetch(adresses_url, {
-                method: "GET",
-            });
+
+        const response = await fetch(adresses_url, { method: "GET" });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const response_data = await response.json();
         const contractAddress = response_data.VOTING_ADRESS;
         const forwarderAddress = response_data.FORWARDER_ADRESS;
 
         const provider = new ethers.JsonRpcProvider(BLOCKCHAIN_NODE_URL);
         const nonce = await getNonceFromForwarder(forwarderAddress, clientAddress);
-        
+
         const request_to_sign = {
             from: clientAddress,
             to: contractAddress,
@@ -108,7 +108,6 @@ async function Vote(topicId, option) {
             const relayResult = await relayRes.json();
             console.log("Relay tx result:", relayResult);
 
-
             return {
                 txHash: relayResult.tx_hash,
                 status: "success"
@@ -118,12 +117,13 @@ async function Vote(topicId, option) {
             throw error;
         }
     }
+
     const ABI = [
         "function vote(string topicId, string option)"
     ];
     const iface = new ethers.Interface(ABI);
     const data = iface.encodeFunctionData("vote", [topicId, option]);
-    
+
     try {
         const result = await sendMetaTx(data);
         console.log("Vote transaction completed:", result);
@@ -134,3 +134,4 @@ async function Vote(topicId, option) {
     }
 }
 
+export default Vote;

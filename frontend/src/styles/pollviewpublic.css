@@ -202,3 +202,29 @@
   background-color: #a5b4fc;
   cursor: not-allowed;
 }
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
