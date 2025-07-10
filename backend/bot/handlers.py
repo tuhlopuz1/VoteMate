@@ -67,7 +67,7 @@ async def watch_polls_callback(callback: types.CallbackQuery):
         await adapter.update_by_id(User, user.id, {"notifications": True})
     else:
         user = user[0]
-        await callback.message.answer("Вы отписались от рассылки. Будем скучать!")
+        await callback.message.answer("Вы отписались от уведомлений. Будем скучать!")
         await adapter.update_by_id(User, user.id, {"notifications": False})
 
 
@@ -81,31 +81,42 @@ async def statistics_callback(callback: types.CallbackQuery, state: FSMContext):
 @router.message(PollStates.WAITING_FOR_POLL_NAME)
 async def handle_poll_name(message: types.Message, state: FSMContext):
     poll_name = message.text.strip()
-    poll = await adapter.find_similar_value(Poll, "name", poll_name, similarity_threshold=70)
+    polls = await adapter.find_similar_value(Poll, "name", poll_name, similarity_threshold=70)
     user = await adapter.get_by_value(User, "telegram_id", message.chat.id)
     if not user:
         await message.answer("Похоже что вы ещё не зарегистрированы в нашем сервисе.")
         return None
-    if poll:
+    if polls:
         user = user[0]
-        poll = poll[0]
-        if poll["user_id"] != user.id:
+        sent = False
+        for poll in polls:
+            if poll["user_id"] == user.id:
+                if poll["votes_count"] == 0:
+                    await message.answer(
+                        "В вашем голосовании никто не голосовал, вывести статистику невозможно"
+                    )
+                poll_dict = {
+                    "id": str(poll["id"]),
+                    "name": poll["name"],
+                    "votes_count": poll["votes_count"],
+                    "user_id": poll["user_id"],
+                    "user_username": poll["user_username"],
+                    "description": poll["description"],
+                    "options": poll["options"],
+                }
+                visualizer = PollVisualizer(poll_dict)
+                graph = visualizer.generate_visual_report()
+                file = FSInputFile(graph)
+                await message.answer_photo(
+                    photo=file, caption=f"Статистика вашего опроса {poll_name}:"
+                )
+                os.remove(graph)
+                sent = True
+        if sent:
+            return None
+        else:
             await message.answer("Нам не удалось найти принадлежащего вам опроса с таким именем")
             return None
-        poll_dict = {
-            "id": str(poll["id"]),
-            "name": poll["name"],
-            "votes_count": poll["votes_count"],
-            "user_id": poll["user_id"],
-            "user_username": poll["user_username"],
-            "description": poll["description"],
-            "options": poll["options"],
-        }
-        visualizer = PollVisualizer(poll_dict)
-        graph = visualizer.generate_visual_report()
-        file = FSInputFile(graph)
-        await message.answer_photo(photo=file, caption=f"Статистика вашего опроса {poll_name}:")
-        os.remove(graph)
     else:
         await message.answer("Голосование с таким названием не найдено.")
     await state.clear()

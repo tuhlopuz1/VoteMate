@@ -7,12 +7,18 @@ from fastapi import APIRouter, Body, Depends
 from backend.core.dependencies import badresponse, check_user, okresp
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User, Vote
+from backend.routes.polls.tasks import enqueue_notify_user
 
 router = APIRouter()
 
 
 @router.post("/vote/{poll_id}", status_code=201)
-async def vote(user: Annotated[User, Depends(check_user)], poll_id: UUID, option: str = Body(...)):
+async def vote(
+    user: Annotated[User, Depends(check_user)],
+    poll_id: UUID,
+    notification: bool,
+    option: str = Body(...),
+):
     if not user:
         return badresponse("Unauthorized", 401)
     poll = await adapter.get_by_id(Poll, poll_id)
@@ -34,5 +40,10 @@ async def vote(user: Annotated[User, Depends(check_user)], poll_id: UUID, option
     votes = poll.votes_count
     options[option] = options[option] + 1
     await adapter.update_by_id(Poll, poll_id, {"votes_count": votes + 1, "options": options})
-    await adapter.insert(Vote, {"user_id": user.id, "poll_id": poll_id})
+    if notification:
+        delay = (poll.end_date - datetime.now(timezone.utc)).total_seconds()
+        await enqueue_notify_user(user.id, poll_id, delay)
+        await adapter.insert(Vote, {"user_id": user.id, "poll_id": poll_id, "notification": True})
+    else:
+        await adapter.insert(Vote, {"user_id": user.id, "poll_id": poll_id})
     return okresp(201)

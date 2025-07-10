@@ -1,13 +1,20 @@
 import asyncio
 import os
+from uuid import UUID
 
 from aiogram.types import FSInputFile
 from arq.connections import RedisSettings
 
 from backend.bot.dispatcher import bot
-from backend.core.config import REDIS_ARQ, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
+from backend.core.config import (
+    FRONTEND_URL,
+    REDIS_ARQ,
+    REDIS_HOST,
+    REDIS_PASSWORD,
+    REDIS_PORT,
+)
 from backend.models.db_adapter import adapter
-from backend.models.db_tables import Poll, User
+from backend.models.db_tables import Poll, User, Vote
 from backend.models.poll_analyzer import PollVisualizer
 
 
@@ -19,7 +26,7 @@ async def shutdown(ctx):
     print("Worker stopping")
 
 
-async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
+async def notify_author(ctx, chat_id: int, poll_id: UUID, delay: float):
     await asyncio.sleep(delay)
     poll = await adapter.get_by_id(Poll, poll_id)
     user = await adapter.get_by_value(User, "telegram_id", chat_id)
@@ -53,10 +60,27 @@ async def notify_author(ctx, chat_id: int, poll_id: str, delay: float):
     return None
 
 
+async def notify_user(ctx, user_id: UUID, poll_id: UUID, delay: float):
+    await asyncio.sleep(delay)
+    poll = await adapter.get_by_id(Poll, poll_id)
+    user = await adapter.get_by_id(User, user_id)
+    vote = await adapter.get_by_values(Vote, {"user_id": user_id, "poll_id": poll_id})
+    if not vote[0].is_notified:
+        return None
+    await bot.send_message(
+        chat_id=user.telegram_id,
+        text=f'Голосование "{poll.name}" в котором вы принимали участие - завершено.\n\n'
+        "Результаты можно посмотреть по ссылке:\n"
+        f"{FRONTEND_URL}/#/poll/{str(poll_id)}",
+    )
+    await adapter.update_by_id(Vote, vote.id, {"is_notified": True})
+    return None
+
+
 class WorkerSettings:
     redis_settings = RedisSettings(
         host=REDIS_HOST, port=REDIS_PORT, database=REDIS_ARQ, password=REDIS_PASSWORD
     )
-    functions = [notify_author]
+    functions = [notify_author, notify_user]
     on_startup = startup
     on_shutdown = shutdown

@@ -78,6 +78,8 @@ class Vote(Base):
         ForeignKey("polls.id", ondelete="CASCADE"),
         index=True,
     )
+    notification: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_notified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     voted_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False, default=func.now()
     )

@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 from sqlalchemy import pool
 
 from alembic import context
-from backend.models.db_adapter import Base
-from backend.models.db_tables import Comment, Poll, User, Vote  # noqa
+from backend.models.db_tables import Base
 
 load_dotenv("config/.env")
 
