@@ -33,3 +33,5 @@
 > 8. Теперь оформите свой профиль)
 <img width="75%" src="https://github.com/asdfrewqha/blockchain-test/blob/main/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2017.47.12.png"></img>
 
+# Возможности на сайте
+## Создание собственных голосований
