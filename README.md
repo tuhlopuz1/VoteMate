@@ -43,3 +43,7 @@
 ## Голосование
 > Перейдите на страницу `Search` - [Search](https://vote.vickz.ru/#/search)
 <img src='https://github.com/asdfrewqha/blockchain-test/blob/readme/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2018.50.40.png'></img>
+> Выберите любое голосование
+>
+> <img src='https://github.com/asdfrewqha/blockchain-test/blob/readme/Readme-photos/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202025-07-10%20%D0%B2%2019.06.37.png'></img>
+> Вы можете поставить галочку `Notify me about this poll's result`, чтобы при окончании голосования вам пришло уведомление в телеграмм [бота](t.me/SecureVoteBlockchainBot)
