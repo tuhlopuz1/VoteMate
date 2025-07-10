@@ -28,5 +28,5 @@ async def end_vote(poll_id: UUID, user: Annotated[User, Depends(check_user)]):
     if votes:
         for vote in votes:
             if vote.notification:
-                await enqueue_notify_user(user_id=user.id, poll_id=poll_id, delay=0.0)
+                await enqueue_notify_user(user_id=vote.user_id, poll_id=poll_id, delay=0.0)
     return okresp(200, "Poll ended")
