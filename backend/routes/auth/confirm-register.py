@@ -1,9 +1,11 @@
 import logging
 
+from eth_account import Account
 from fastapi import APIRouter
 from uuid_v7.base import uuid7
 
 from backend.core.dependencies import badresponse
+from backend.models.cryptography import encrypt_secret
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import User
 from backend.models.hashing import get_password_hash
@@ -27,6 +29,9 @@ async def register(user: UserCreate, code: str):
     if db_tg:
         return badresponse("Telegram is already used to create account", 409)
     new_id = uuid7()
+    account = Account.create()
+    private_key = account.key.hex()
+    encrypted = encrypt_secret(private_key, user.password)
     new_user = {
         "id": new_id,
         "name": user.name,
@@ -34,6 +39,7 @@ async def register(user: UserCreate, code: str):
         "hashed_password": get_password_hash(user.password),
         "role": user.role,
         "telegram_id": redis_telegram,
+        "encrypted_key": encrypted,
     }
 
     new_user_db = await adapter.insert(User, new_user)
@@ -55,4 +61,5 @@ async def register(user: UserCreate, code: str):
         access_token=access_token,
         refresh_token=refresh_token,
         telegram_id=redis_telegram,
+        private_key=private_key,
     )
