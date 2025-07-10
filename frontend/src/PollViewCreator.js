@@ -3,11 +3,12 @@ import Sidebar from './components/Sidebar';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import Swal from 'sweetalert2';
 import apiRequest from './components/Requests';
 import './styles/pollviewcreator.css';
+import './styles/pollviewpublic.css'; // подключаем стили для комментариев
 
 const PollViewCreator = () => {
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ const PollViewCreator = () => {
   const [chartType, setChartType] = useState('pie');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Состояния для комментариев
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
+  const [commentLoading, setCommentLoading] = useState(false);
 
   useEffect(() => {
     const fetchPoll = async () => {
@@ -52,6 +58,53 @@ const PollViewCreator = () => {
 
     fetchPoll();
   }, [poll_id, navigate]);
+
+  // Получение комментариев
+  const fetchComments = async () => {
+    try {
+      const res = await apiRequest({
+        url: `https://api.vote.vickz.ru/api/v2/get-comments/${poll_id}`,
+        method: 'GET',
+        auth: true
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch comments');
+
+      const data = await res.json();
+      setComments(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Получаем комментарии при загрузке опроса
+  useEffect(() => {
+    if (pollData) fetchComments();
+  }, [pollData]);
+
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim()) return;
+
+    setCommentLoading(true);
+    try {
+      const res = await apiRequest({
+        url: `https://api.vote.vickz.ru/api/v2/add-comment/${poll_id}`,
+        method: 'POST',
+        body: commentText,
+        auth: true
+      });
+
+      if (!res.ok) throw new Error('Failed to post comment');
+
+      setCommentText('');
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to post comment');
+    } finally {
+      setCommentLoading(false);
+    }
+  };
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -197,6 +250,47 @@ const PollViewCreator = () => {
               <button className="export-button" style={{ backgroundColor: '#ef4444' }} onClick={handleEndPoll}>
                 End Poll Early
               </button>
+            )}
+          </div>
+        </div>
+
+        {/* Комментарии */}
+        <div className="comments-section">
+          <div className="comment-input">
+            <textarea
+              placeholder="Write a comment..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              rows={3}
+            />
+            <button onClick={handleCommentSubmit} disabled={commentLoading || !commentText.trim()}>
+              {commentLoading ? 'Posting...' : 'Post Comment'}
+            </button>
+          </div>
+          <h2>Comments: {comments.length}</h2>
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">No comments yet.</p>
+            ) : (
+              comments.map((comment, i) => (
+                <div key={i} className="comment-item">
+                  <Link to={`/user/${comment.user_username}`}>
+                    <img
+                      src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
+                      alt={comment.user_id}
+                      className="comment-avatar"
+                    />
+                  </Link>
+                  <div className="comment-body">
+                    <div className="comment-header">
+                      <Link to={`/user/${comment.user_username}`} className="black-link">
+                        <strong>{comment.user_username}</strong>
+                      </Link>
+                    </div>
+                    <p className="comment-text">{comment.content}</p>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>

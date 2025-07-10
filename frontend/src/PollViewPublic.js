@@ -39,6 +39,9 @@ const PollViewPublic = () => {
         if (!response.ok) throw new Error('Failed to load poll');
 
         const data = await response.json();
+        if (data.user_username === localStorage.getItem('username')){
+          window.location.href = `/#/poll-view-creator/${poll_id}`
+        }
         setPollData(data);
       } catch (err) {
         console.error(err);
