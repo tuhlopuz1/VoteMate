@@ -30,8 +30,8 @@ async def check_vote_status(poll: Poll, vote_status: Optional[str], user_id: UUI
         return True
 
     # Проверяем, голосовал ли пользователь в этом опросе
-    vote = await adapter.get_by_values(Vote, {"user_id": user_id, "poll_id": poll.id})
-    has_voted = vote is not None
+    votes = await adapter.get_by_values(Vote, {"user_id": user_id, "poll_id": poll.id})
+    has_voted = len(votes) > 0  # Исправлено: проверяем наличие голосов
 
     if vote_status == "voted" and has_voted:
         return True
@@ -45,22 +45,30 @@ async def prepare_poll_response(poll: Poll, user: User) -> PollSchema:
     now = datetime.now(timezone.utc)
     poll_sch = PollSchema.model_validate(poll)
 
+    # Получаем данные опроса
+    if isinstance(poll, dict):
+        poll_id = poll["id"]
+        start_date = poll["start_date"]
+        end_date = poll["end_date"]
+        user_id_val = poll["user_id"]
+        options = poll["options"]
+    else:
+        poll_id = poll.id
+        start_date = poll.start_date
+        end_date = poll.end_date
+        user_id_val = poll.user_id
+        options = poll.options
+
     # Устанавливаем флаги
-    try:
-        poll_sch.is_active = poll["start_date"] <= now <= poll["end_date"]
-        poll_sch.is_voted = (
-            await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll["id"]})
-            is not None
-        )
-        if user.id != poll["user_id"] and now < poll["end_date"]:
-            poll_sch.options = list(poll.options.keys()) if poll.options else []
-    except Exception:
-        poll_sch.is_active = poll.start_date <= now <= poll.end_date
-        poll_sch.is_voted = (
-            await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll.id}) is not None
-        )
-        if user.id != poll.user_id and now < poll.end_date:
-            poll_sch.options = list(poll.options.keys()) if poll.options else []
+    poll_sch.is_active = start_date <= now <= end_date
+
+    # Проверяем, голосовал ли пользователь
+    votes = await adapter.get_by_values(Vote, {"user_id": user.id, "poll_id": poll_id})
+    poll_sch.is_voted = len(votes) > 0
+
+    # Если пользователь не автор и опрос еще активен
+    if user.id != user_id_val and now < end_date:
+        poll_sch.options = list(options.keys()) if options else []
 
     return poll_sch
 
@@ -89,42 +97,45 @@ async def search_polls(user: Annotated[User, Depends(check_user)], search_params
     # Применяем фильтры
     filtered_polls = []
     for poll in polls:
-        # Проверка приватности: не приватные или созданные пользователем
-        try:
-            if not poll["private"] and poll["user_id"] != user.id:
-                continue
-        except Exception:
-            if not poll.private and poll.user_id != user.id:
-                continue
-        # Проверка статуса опроса
-        if not await check_poll_status(poll, search_params.poll_status):
+        # Получаем данные опроса
+        if isinstance(poll, dict):
+            is_private = poll["private"]
+            user_id_val = poll["user_id"]
+        else:
+            is_private = poll.private
+            user_id_val = poll.user_id
+
+        # Проверка приватности: пропускаем только приватные опросы не принадлежащие пользователю
+        if is_private and user_id_val != user.id:
             continue
 
         # Проверка статуса голосования
         if not await check_vote_status(poll, search_params.voting_status, user.id):
             continue
 
+        # Проверка статуса опроса
+        if not await check_poll_status(poll, search_params.poll_status):
+            continue
+
         # Проверка тегов
         if search_params.tags:
-            try:
-                poll_tags = poll["hashtags"] or []
-            except Exception:
-                poll_tags = poll.hashtags or []
-            if not set(search_params.tags).issubset(poll_tags):
+            poll_tags = poll["hashtags"] if isinstance(poll, dict) else poll.hashtags
+            poll_tags = poll_tags or []
+            if not set(search_params.tags).issubset(set(poll_tags)):
                 continue
 
         filtered_polls.append(poll)
 
     # Применяем сортировку
     if search_params.sort_by == "popularity_asc":
-        try:
+        if isinstance(filtered_polls[0], dict):
             filtered_polls.sort(key=lambda x: x["votes_count"])
-        except Exception:
+        else:
             filtered_polls.sort(key=lambda x: x.votes_count)
     elif search_params.sort_by == "popularity_desc":
-        try:
+        if isinstance(filtered_polls[0], dict):
             filtered_polls.sort(key=lambda x: x["votes_count"], reverse=True)
-        except Exception:
+        else:
             filtered_polls.sort(key=lambda x: x.votes_count, reverse=True)
 
     # Подготавливаем ответ
