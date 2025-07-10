@@ -25,6 +25,7 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
         return badresponse("Duplicating options")
     for vote in poll.options:
         options[vote] = 0
+    hashtags = [i.replace("#", "") for i in poll.description.split() if i.startswith("#")]
     new_poll_obj = {
         "name": poll.name,
         "description": poll.description,
@@ -34,6 +35,7 @@ async def create_poll(user: Annotated[User, Depends(check_user)], poll: NewPoll)
         "start_date": poll.start_date,
         "end_date": poll.end_date,
         "private": poll.private,
+        "hashtags": hashtags,
     }
     new_poll_db = await adapter.insert(Poll, new_poll_obj)
     delay = (new_poll_db.end_date - datetime.now(timezone.utc)).total_seconds()

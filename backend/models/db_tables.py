@@ -55,6 +55,7 @@ class Poll(Base):
     end_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     private: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_notified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    hashtags: Mapped[list] = mapped_column(JSONB, nullable=True)
 
     votes = relationship("Vote", back_populates="poll", cascade="all, delete")
 
