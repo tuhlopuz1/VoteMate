@@ -1,4 +1,3 @@
-
 import { ethers } from "ethers";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -23,7 +22,8 @@ async function Vote(topicId, option) {
         }
 
         async function loadWalletFromLocalStorage() {
-            const privateKey = localStorage.getItem('privateKey');
+            //const privateKey = localStorage.getItem('privateKey');
+            const privateKey = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b1138b37e0e6f314eb0c53f3e8a3";
             if (!privateKey) {
                 throw new Error("Wallet not found in localStorage");
             }
@@ -32,12 +32,24 @@ async function Vote(topicId, option) {
         }
         const clientWallet = await loadWalletFromLocalStorage();
         const clientAddress = clientWallet.address;
-        const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+
         const BackendUrl = process.env.REACT_APP_BACKEND_URL;
         const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT;
         const BLOCKCHAIN_NODE_URL = process.env.REACT_APP_BLOCKCHAIN_NODE_URL;
+
+        const adresses_url = `${BackendUrl}:${BACKEND_PORT}/adresses`
+        console.log("Fetching addresses from:", adresses_url);
+        const response = await fetch(adresses_url, {
+                method: "GET",
+            });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const response_data = await response.json();
+        const contractAddress = response_data.VOTING_ADRESS;
+        const forwarderAddress = response_data.FORWARDER_ADRESS;
+
         const provider = new ethers.JsonRpcProvider(BLOCKCHAIN_NODE_URL);
-        const forwarderAddress = process.env.REACT_APP_FORWARDER_CONTRACT_ADDRESS;
         const nonce = await getNonceFromForwarder(forwarderAddress, clientAddress);
         
         const request_to_sign = {
@@ -99,7 +111,6 @@ async function Vote(topicId, option) {
 
 
 
-
             return {
                 txHash: relayResult.tx_hash,
                 status: "success"
@@ -125,4 +136,3 @@ async function Vote(topicId, option) {
     }
 }
 
-Vote("6", "Option6")

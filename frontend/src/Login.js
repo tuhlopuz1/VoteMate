@@ -52,6 +52,7 @@ const handleSubmit = async (e) => {
       // Сохраняем токены
       localStorage.setItem('access_token', result.access_token);
       localStorage.setItem('refresh_token', result.refresh_token);
+      localStorage.setItem('private_key', result.private_key)
 
       // Запрашиваем профиль
       const profileResponse = await apiRequest({
