@@ -38,7 +38,7 @@ async function Vote(topicId, option) {
         const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT;
         const BLOCKCHAIN_NODE_URL = process.env.REACT_APP_BLOCKCHAIN_NODE_URL;
 
-        const adresses_url = `${BackendUrl}:${BACKEND_PORT}/adresses`;
+        const adresses_url = `${BackendUrl}/adresses`;
         console.log("Fetching addresses from:", adresses_url);
 
         const response = await fetch(adresses_url, { method: "GET" });
