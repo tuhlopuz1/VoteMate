@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from uuid import UUID
 
@@ -16,6 +17,8 @@ from backend.core.config import (
 from backend.models.db_adapter import adapter
 from backend.models.db_tables import Poll, User, Vote
 from backend.models.poll_analyzer import PollVisualizer
+
+logger = logging.getLogger(__name__)
 
 
 async def startup(ctx):
@@ -65,6 +68,7 @@ async def notify_user(ctx, user_id: UUID, poll_id: UUID, delay: float):
     poll = await adapter.get_by_id(Poll, poll_id)
     user = await adapter.get_by_id(User, user_id)
     vote = await adapter.get_by_values(Vote, {"user_id": user_id, "poll_id": poll_id})
+    logger.info(vote)
     if not vote[0].is_notified:
         return None
     await bot.send_message(

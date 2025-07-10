@@ -4,7 +4,7 @@ main_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="Уведомления о завершении моих голосований", callback_data="subscribe1"
+                text="Уведомления о завершении моих голосований", callback_data="subscribe"
             ),
         ],
         [
