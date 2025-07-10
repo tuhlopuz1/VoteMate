@@ -24,6 +24,7 @@ async def profile(user: Annotated[User, Depends(check_user)]):
         description=user.description,
         voted_polls=len(voted_polls),
         created_polls=len(created_polls),
+        notifications=user.notifications,
     )
 
     return response_user

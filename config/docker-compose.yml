@@ -20,6 +20,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   redis:
     image: redis:7-alpine
     container_name: redis-container
@@ -37,6 +38,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   fastapi:
     image: asdfrewqha/blockchain:latest
     container_name: fastapi-container
@@ -52,15 +54,18 @@ services:
     expose:
       - "8000"
     restart: unless-stopped
-  celery:
+
+  arq:
     image: asdfrewqha/blockchain:latest
-    container_name: celery-container
+    container_name: arq-container
     env_file:
       - /root/fastapi/.env
-    command: celery -A backend.core.celery_worker.celery_app worker --loglevel=info -P prefork
+    command: arq backend.core.worker.WorkerSettings
     depends_on:
       redis:
         condition: service_healthy
+    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     container_name: nginx-container
