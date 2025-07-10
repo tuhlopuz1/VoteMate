@@ -451,8 +451,11 @@ class PremiumPDFReportGenerator:
         elements.append(Spacer(1, 1 * cm))
 
         # Pareto chart instead of boxplot
-        self._create_premium_boxplot(elements)
-        self._create_pareto_chart(elements)
+        if len(self.poll_data["options"]) > 3:
+            self._create_premium_boxplot(elements)
+            self._create_pareto_chart(elements)
+        else:
+            self._create_pareto_chart(elements)
 
         # Footer
         elements.append(Spacer(1, 1 * cm))
