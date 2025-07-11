@@ -19,7 +19,7 @@ const SettingsPage = () => {
     setName(localStorage.getItem('name') || '');
     setUsername(localStorage.getItem('username') || '');
     setDescription(localStorage.getItem('description') || '');
-    setAvatarUrl(`https://api.vote.vickz.ru/api/v2/get-profile-picture/${userId}`);
+    setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png?nocache=${Date.now()}`);
   }, [userId]);
 
   const handleProfileUpdate = async (e) => {
@@ -40,9 +40,9 @@ const SettingsPage = () => {
 
       const updated = await response.json();
 
-      localStorage.setItem('name', updated.name);
-      localStorage.setItem('username', updated.username);
-      localStorage.setItem('description', updated.description);
+      localStorage.setItem('name', name);
+      localStorage.setItem('username', username);
+      localStorage.setItem('description', description);
 
       Swal.fire({
         icon: 'success',
@@ -79,7 +79,7 @@ const SettingsPage = () => {
 
       if (!response.ok) throw new Error('Failed to upload avatar');
 
-      setAvatarUrl(`https://api.vote.vickz.ru/api/v2/get-profile-picture/${userId}?t=${Date.now()}`);
+      setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png?nocache=${Date.now()}`);
 
       Swal.fire({
         icon: 'success',

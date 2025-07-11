@@ -71,7 +71,6 @@ const ProfileSetupPage = () => {
 
         if (!avatarResponse.ok) {
           const errorData = await avatarResponse.json();
-          console.log(errorData)
           throw new Error(errorData.msg || 'Error uploading avatar');
         }
       }
@@ -79,7 +78,8 @@ const ProfileSetupPage = () => {
         window.location.href = '#/home';
       }
       else {
-        window.location.href = localStorage.getItem('location_after_login')
+        window.location.href = localStorage.getItem('location_after_login');
+        localStorage.removeItem('location_after_login')
       }
 
 
@@ -90,7 +90,14 @@ const ProfileSetupPage = () => {
   };
 
   const handleSkip = () => {
-    window.location.href = '/#/home';
+    if (!localStorage.getItem('location_after_login')) {
+        window.location.href = '#/home';
+      }
+      else {
+        window.location.href = localStorage.getItem('location_after_login');
+        localStorage.removeItem('location_after_login')
+      }
+
   };
 
   return (

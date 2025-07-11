@@ -62,7 +62,7 @@ const WelcomePage = () => {
         {/* Hero Section */}
         <div className="hero-section">
           <h1 className="hero-title">
-            Welcome to <span className="app-name">Vickz</span>
+            Welcome to <span className="app-name">VoteMate</span>
           </h1>
           <p className="hero-description">
             A secure, anonymous voting platform for teams, communities, and events. Make your voice heard — privately and effortlessly.

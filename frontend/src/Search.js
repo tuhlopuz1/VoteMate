@@ -140,7 +140,7 @@ const SearchPage = () => {
                       <div className="vote-header">
                         <img
                           className="vote-avatar"
-                          src={`https://blockchain-pfps.s3.regru.cloud/${poll.user_username}/avatar_${poll.user_id}.png`}
+                          src={`https://blockchain-pfps.s3.regru.cloud/${poll.user_username}/avatar_${poll.user_id}.png?nocache=${Date.now()}`}
                           alt="Avatar"
                         />
                         <span className={`vote-status ${poll.closed ? 'closed' : 'open'}`}>
@@ -166,7 +166,7 @@ const SearchPage = () => {
                 {results.map((user, index) => (
                   <div key={index} className="user-card" onClick={() => {window.location.href = '/#/user/' + user.username}}>
                     <img
-                      src={`https://blockchain-pfps.s3.regru.cloud/${user.username}/avatar_${user.id}.png`}
+                      src={`https://blockchain-pfps.s3.regru.cloud/${user.username}/avatar_${user.id}.png?nocache=${Date.now()}`}
                       alt={user.username}
                     />
                     <span>{user.username}</span>

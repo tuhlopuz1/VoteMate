@@ -202,3 +202,10 @@
   background-color: #e5e7eb;
   color: #6b7280;
 }
+
+
+@media (orientation: portrait) {
+  .actions {
+    flex-direction: column;
+  }
+}

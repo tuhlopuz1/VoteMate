@@ -242,7 +242,7 @@
   left: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  width: 100%;
+  width: 96%;
   min-height: 100px;
   pointer-events: none;
   padding: 8px;
@@ -268,12 +268,13 @@
   border: 1px solid #ccc;
   padding: 8px;
   min-height: 100px;
-  width: 100%;
+  width: 96%;
   resize: vertical;
   border-radius: 4px;
   font-size: 16px;
   line-height: 1.5;
   font-family: inherit;
+  resize: none;
 }
 .preview-description .hashtag {
   color: #007BFF;
