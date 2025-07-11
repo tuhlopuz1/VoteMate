@@ -79,7 +79,7 @@ const SettingsPage = () => {
 
       if (!response.ok) throw new Error('Failed to upload avatar');
 
-      setAvatarUrl(`https://api.vote.vickz.ru/api/v2/get-profile-picture/${userId}?t=${Date.now()}`);
+      setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png?nocache=${Date.now()}`);
 
       Swal.fire({
         icon: 'success',

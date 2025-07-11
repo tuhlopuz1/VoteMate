@@ -12,7 +12,7 @@ const Logo = ({ size = 'medium' }) => {
       <div className={`logo-icon ${sizeClass}`}>
         <span className="logo-letter">V</span>
       </div>
-      <span className="logo-text">Vickz</span>
+      <span className="logo-text">VoteMate</span>
     </div>
   );
 };
