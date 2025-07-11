@@ -19,7 +19,7 @@ const SettingsPage = () => {
     setName(localStorage.getItem('name') || '');
     setUsername(localStorage.getItem('username') || '');
     setDescription(localStorage.getItem('description') || '');
-    setAvatarUrl(`https://api.vote.vickz.ru/api/v2/get-profile-picture/${userId}`);
+    setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png`);
   }, [userId]);
 
   const handleProfileUpdate = async (e) => {
