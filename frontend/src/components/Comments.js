@@ -34,7 +34,6 @@ const likeComment = async (commentId, like) => {
 
     if (!response.ok) {
       console.error('Ошибка при отправке лайка/дизлайка:', response.statusText);
-      console.log(response);
     }
   } catch (error) {
     console.error('Ошибка при отправке лайка/дизлайка:', error);

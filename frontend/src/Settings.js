@@ -40,9 +40,9 @@ const SettingsPage = () => {
 
       const updated = await response.json();
 
-      localStorage.setItem('name', updated.name);
-      localStorage.setItem('username', updated.username);
-      localStorage.setItem('description', updated.description);
+      localStorage.setItem('name', name);
+      localStorage.setItem('username', username);
+      localStorage.setItem('description', description);
 
       Swal.fire({
         icon: 'success',
