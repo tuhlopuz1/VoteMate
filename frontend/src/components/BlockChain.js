@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 
 async function Vote(topicId, option) {
-    console.log('slkjhsdfgsfd')
     async function sendMetaTx(data) {
         async function getNonceFromForwarder(forwarderAddress, from) {
             const forwarderAbi = [
@@ -39,7 +38,6 @@ async function Vote(topicId, option) {
         const BLOCKCHAIN_NODE_URL = process.env.REACT_APP_BLOCKCHAIN_NODE_URL;
 
         const adresses_url = `${BackendUrl}/adresses`;
-        console.log("Fetching addresses from:", adresses_url);
 
         const response = await fetch(adresses_url, { method: "GET" });
         if (!response.ok) {
@@ -124,7 +122,6 @@ async function Vote(topicId, option) {
     ];
     const iface = new ethers.Interface(ABI);
     const data = iface.encodeFunctionData("vote", [topicId, option]);
-    console.log(132123131231)
     try {
         const result = await sendMetaTx(data);
         console.log("Vote transaction completed:", result);

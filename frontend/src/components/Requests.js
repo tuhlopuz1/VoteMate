@@ -2,9 +2,7 @@ let isRefreshing = false;
 let refreshPromise = null;
 
 function getAccessToken() {
-    console.log(1)
     if (!localStorage.getItem('access_token')) {
-        console.log(2)
         localStorage.setItem('location_after_login', window.location.href)
     }
     return localStorage.getItem('access_token');
@@ -47,7 +45,6 @@ async function apiRequest({
     const queryString = new URLSearchParams(params).toString();
     const fullUrl = queryString ? `${url}?${queryString}` : url;
 
-    console.log(body)
 
 
     if (auth) {
@@ -68,7 +65,6 @@ async function apiRequest({
 
     // Если токен истёк и это авторизованный запрос
     if (response.status === 401 && auth && retry) {
-        console.log(123)
         try {
             if (!isRefreshing) {
                 isRefreshing = true;
@@ -91,10 +87,8 @@ async function apiRequest({
             localStorage.removeItem('access_token')
             
             if (window.location.href.slice(-5) !== 'login') {
-                console.log(window.location.href)
                 localStorage.setItem('location_after_login', window.location.href)
             }
-            console.log(123123, window.location.href)
             window.location.href = '/#/login';
             throw error;
         }

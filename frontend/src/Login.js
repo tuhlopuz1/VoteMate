@@ -47,7 +47,6 @@ const handleSubmit = async (e) => {
       }
 
       const result = await response.json();
-      console.log('Ответ от сервера:', result);
 
       // Сохраняем токены
       localStorage.setItem('access_token', result.access_token);
@@ -66,7 +65,6 @@ const handleSubmit = async (e) => {
       }
 
       const profileData = await profileResponse.json();
-      console.log('Профиль пользователя:', profileData);
 
       // Сохраняем профиль в localStorage
       localStorage.setItem('user_profile', JSON.stringify(profileData));

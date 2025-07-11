@@ -71,7 +71,6 @@ const ProfileSetupPage = () => {
 
         if (!avatarResponse.ok) {
           const errorData = await avatarResponse.json();
-          console.log(errorData)
           throw new Error(errorData.msg || 'Error uploading avatar');
         }
       }
