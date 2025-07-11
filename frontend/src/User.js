@@ -12,7 +12,7 @@ const UserPage = () => {
   const [activeTab, setActiveTab] = useState('polls');
 
   const avatarUrl = userInfo.id
-    ? `https://blockchain-pfps.s3.regru.cloud/${userInfo.username}/avatar_${userInfo.id}.png`
+    ? `https://blockchain-pfps.s3.regru.cloud/${userInfo.username}/avatar_${userInfo.id}.png?nocache=${Date.now()}`
     : '';
 
   useEffect(() => {

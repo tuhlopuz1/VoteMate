@@ -19,7 +19,7 @@ const SettingsPage = () => {
     setName(localStorage.getItem('name') || '');
     setUsername(localStorage.getItem('username') || '');
     setDescription(localStorage.getItem('description') || '');
-    setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png`);
+    setAvatarUrl(`https://blockchain-pfps.s3.regru.cloud/${localStorage.getItem('username')}/avatar_${localStorage.getItem('id')}.png?nocache=${Date.now()}`);
   }, [userId]);
 
   const handleProfileUpdate = async (e) => {

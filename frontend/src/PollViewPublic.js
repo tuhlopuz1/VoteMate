@@ -176,7 +176,7 @@ const PollViewPublic = () => {
         </button>
 
         <div className="poll-header">
-          <img className="poll-icon" onClick={() => {window.location.href = '/#/user/'+user_username}} src={`https://blockchain-pfps.s3.regru.cloud/${user_username}/avatar_${user_id}.png`} />
+          <img className="poll-icon" onClick={() => {window.location.href = '/#/user/'+user_username}} src={`https://blockchain-pfps.s3.regru.cloud/${user_username}/avatar_${user_id}.png?nocache=${Date.now()}`} />
           <div>
             <div className="poll-author" onClick={() => {window.location.href = '/#/user/'+user_username}}>{user_username}</div>
             <h1 className="poll-title">{name}</h1>
@@ -286,7 +286,7 @@ const PollViewPublic = () => {
     <div key={i} className="comment-item">
       <Link to={`/user/${comment.user_username}`}>
         <img
-          src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png`}
+          src={`https://blockchain-pfps.s3.regru.cloud/${comment.user_username}/avatar_${comment.user_id}.png?nocache=${Date.now()}`}
           alt={comment.user_id}
           className="comment-avatar"
         />

@@ -14,7 +14,7 @@ const ProfilePage = () => {
   const userId = localStorage.getItem('id');
   const name = localStorage.getItem('name');
   const description = localStorage.getItem('description');
-  const avatarUrl = `https://blockchain-pfps.s3.regru.cloud/${username}/avatar_${userId}.png`;
+  const avatarUrl = `https://blockchain-pfps.s3.regru.cloud/${username}/avatar_${userId}.png?nocache=${Date.now()}`;
 
   useEffect(() => {
     const fetchPolls = async () => {
@@ -103,7 +103,7 @@ const ProfilePage = () => {
         >
           <div className="vote-header">
             <div className="vote-user">
-              <img src={`https://blockchain-pfps.s3.regru.cloud/${poll.user_username}/avatar_${poll.user_id}.png`} alt="User" className="vote-avatar" />
+              <img src={`https://blockchain-pfps.s3.regru.cloud/${poll.user_username}/avatar_${poll.user_id}.png?nocache=${Date.now()}`} alt="User" className="vote-avatar" />
               <span className="vote-username">{poll.user_username || username}</span>
             </div>
             <span className={`vote-status ${isPollOpen ? 'open' : 'closed'}`}>
