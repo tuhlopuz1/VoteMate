@@ -31,7 +31,7 @@ const PollCreator = () => {
     const [hour, minute] = timePart.split(':').map(Number);
     return new Date(year, month - 1, day, hour, minute);
   };
-  
+
 
 
   // Конвертируем локальное московское время (UTC+3) в UTC для отправки на сервер

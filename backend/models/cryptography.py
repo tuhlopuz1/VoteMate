@@ -24,11 +24,10 @@ def encrypt_secret(secret: str, passphrase: str) -> bytes:
     return salt + nonce + ciphertext
 
 
-def decrypt_secret(hex_data: str, passphrase: str) -> str:
-    raw = bytes.fromhex(hex_data)
-    salt = raw[:12]
-    nonce = raw[12:24]
-    ciphertext = raw[24:]
+def decrypt_secret(data: bytes, passphrase: str) -> str:
+    salt = data[:12]
+    nonce = data[12:24]
+    ciphertext = data[24:]
 
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -39,4 +38,5 @@ def decrypt_secret(hex_data: str, passphrase: str) -> str:
     )
     key = kdf.derive(passphrase.encode())
     aesgcm = AESGCM(key)
+
     return aesgcm.decrypt(nonce, ciphertext, None).decode()

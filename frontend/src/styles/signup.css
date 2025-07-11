@@ -9,13 +9,13 @@
     /* background-image: url(https://cdn.deepseek.com/blog/banner-background.webp); */
     background-image: url(../../public/banner-background.webp);
     background-repeat: no-repeat;
-    background-size: cover; 
-    background-position: center; 
+    background-size: cover;
+    background-position: center;
     backdrop-filter: blur(10px);
   }
 
 
-  
+
   .signup-box {
     width: 100%;
     max-width: 400px;
@@ -24,12 +24,12 @@
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
-  
+
   .signup-header {
     text-align: center;
     margin-bottom: 24px;
   }
-  
+
   .blue-link {
     color: #007bff;
   }
@@ -39,18 +39,18 @@
     justify-content: center;
     margin-bottom: 12px;
   }
-  
+
   .signup-header h2 {
     font-size: 24px;
     font-weight: bold;
     color: #111827;
   }
-  
+
   .login-suggest {
     font-size: 14px;
     color: #6b7280;
   }
-  
+
   .server-error {
     color: red;
     margin-top: 10px;
@@ -61,22 +61,22 @@
     color: #2563eb;
     text-decoration: none;
   }
-  
+
   .link:hover {
     text-decoration: underline;
   }
-  
+
   .signup-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .form-group {
     display: flex;
     flex-direction: column;
   }
-  
+
   .form-input {
     padding: 10px 12px;
     font-size: 14px;
@@ -84,34 +84,34 @@
     border-radius: 4px;
     transition: border-color 0.2s;
   }
-  
+
   .form-input:focus {
     border-color: #2563eb;
     outline: none;
   }
-  
+
   .input-error {
     border-color: #f87171 !important;
   }
-  
+
   .error-text {
     margin-top: 4px;
     font-size: 13px;
     color: #dc2626;
   }
-  
+
   .checkbox-group {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  
+
   .checkbox {
     width: 16px;
     height: 16px;
     cursor: pointer;
   }
-  
+
   .submit-button {
     padding: 10px;
     background-color: #2563eb;
@@ -123,8 +123,8 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  
-  
+
+
   #close-svg {
     width: 7%;
     color: black;

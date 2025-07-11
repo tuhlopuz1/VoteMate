@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class Role(str, Enum):
     USER = "USER"
-    ADMIN = "ADMIN"
+    PRO = "PRO"
 
 
 class UsernameScheme(BaseModel):
@@ -129,3 +129,10 @@ class SearchPollSchema(BaseModel):
     poll_status: Optional[str] = None
     voting_status: Optional[str] = None
     sort_by: Optional[str] = None
+
+
+class UserFindResponse(BaseModel):
+    id: UUID
+    name: str
+    username: str
+    similarity: Optional[int] = None

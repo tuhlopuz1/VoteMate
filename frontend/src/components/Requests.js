@@ -85,7 +85,7 @@ async function apiRequest({
             response = await fetch(fullUrl, retryOptions);
         } catch (error) {
             localStorage.removeItem('access_token')
-            
+
             if (window.location.href.slice(-5) !== 'login') {
                 localStorage.setItem('location_after_login', window.location.href)
             }

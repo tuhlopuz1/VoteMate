@@ -7,7 +7,7 @@ import Navbar from './components/NavBar';
 import apiRequest from './components/Requests';
 
 const LogInPage = () => {
-  
+
   const [formData, setFormData] = useState({
     identifier: '',
     password: '',
